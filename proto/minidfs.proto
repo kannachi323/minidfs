@@ -1,0 +1,90 @@
+syntax = "proto3";
+
+package minidfs;
+
+// service methods for minidfs
+service MiniDFSService {
+
+    // Add your service calls here
+
+    // 1. REQUIRED (Parts 1 & 2): A method to store files on the server
+    rpc StoreFile(stream FileBuffer) returns (StoreFileRes);
+
+    // 2. REQUIRED (Parts 1 & 2): A method to fetch files from the server
+    rpc FetchFile(FetchFileReq) returns (stream FileBuffer);
+
+    // 3. REQUIRED (Parts 1 & 2): A method to list all files on the server
+    rpc ListAllFiles(ListAllFilesReq) returns (ListAllFilesRes);
+
+    // 4. REQUIRED (Parts 1 & 2): A method to get the status of a file on the server
+    rpc GetFileStatus(FileStatusReq) returns (FileInfo);
+
+    // Get a file write lock
+    rpc GetWriteLock(WriteLockReq) returns (WriteLockRes);
+
+    // Delete file request
+    rpc DeleteFile(DeleteFileReq) returns (DeleteFileRes);
+
+}
+
+// Add your message types here
+message FileBuffer {
+    string client_id = 1;
+    string filepath = 2;
+    bytes data = 3;
+    uint64 offset = 4;
+}
+
+message StoreFileRes {
+    string msg = 1;
+    bool success = 2;
+}
+
+message FetchFileReq {
+    string filepath = 1;
+}
+
+message DeleteFileReq {
+    string filepath = 1;
+}
+
+message DeleteFileRes {
+    string msg = 1;
+    bool success = 2;
+}
+
+message FileInfo {
+    string filepath = 1;
+    uint64 size = 2;
+    uint64 last_modified = 3;
+    uint64 created_at = 4;
+    uint32 crc = 5;
+}
+
+message ListAllFilesReq {}
+
+message ListAllFilesRes {
+    repeated FileInfo files = 1;
+}
+
+message FileStatusReq {
+    string filepath = 1;
+}
+
+message WriteLockReq {
+    string client_id = 1;
+    string filepath = 2;
+}
+
+message WriteLockRes {
+    bool success = 1;
+}
+
+message CallbackListReq {
+    string name = 1;
+}
+
+message CallbackListRes {
+    uint64 version = 1;
+    repeated FileInfo files = 2;
+}

@@ -1,0 +1,3 @@
+/Users/mtccool668/projects/minidfs/build/CMakeFiles/minidfs.dir
+/Users/mtccool668/projects/minidfs/build/CMakeFiles/edit_cache.dir
+/Users/mtccool668/projects/minidfs/build/CMakeFiles/rebuild_cache.dir
