@@ -16,5 +16,6 @@ set(EXTERNAL_INCLUDE_DIRS
 )
 
 set(EXTERNAL_LIBS
-    ${CMAKE_SOURCE_DIR}/libs/libglfw3.a
+    ${DEV_ROOT_PATH}/glfw/build/src/libglfw3.a
 )
+

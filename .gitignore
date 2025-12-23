@@ -1,5 +1,7 @@
-**/.env
-**/.db
+*.env
 
-build/macos/release/bundle/*
+build/*
+libs/*
+
+
 

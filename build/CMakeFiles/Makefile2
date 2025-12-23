@@ -64,10 +64,16 @@ CMAKE_BINARY_DIR = /Users/mtccool668/projects/minidfs/build
 
 # The main recursive "all" target.
 all: CMakeFiles/minidfs.dir/all
+all: CMakeFiles/minidfs_server.dir/all
+all: CMakeFiles/minidfs_client.dir/all
+all: CMakeFiles/dfs_tests.dir/all
 .PHONY : all
 
 # The main recursive "codegen" target.
 codegen: CMakeFiles/minidfs.dir/codegen
+codegen: CMakeFiles/minidfs_server.dir/codegen
+codegen: CMakeFiles/minidfs_client.dir/codegen
+codegen: CMakeFiles/dfs_tests.dir/codegen
 .PHONY : codegen
 
 # The main recursive "preinstall" target.
@@ -76,7 +82,77 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/minidfs.dir/clean
+clean: CMakeFiles/minidfs_server.dir/clean
+clean: CMakeFiles/minidfs_client.dir/clean
+clean: CMakeFiles/dfs_tests.dir/clean
+clean: gtest/clean
 .PHONY : clean
+
+#=============================================================================
+# Directory level rules for directory gtest
+
+# Recursive "all" directory target.
+gtest/all: gtest/googlemock/all
+.PHONY : gtest/all
+
+# Recursive "codegen" directory target.
+gtest/codegen: gtest/googlemock/codegen
+.PHONY : gtest/codegen
+
+# Recursive "preinstall" directory target.
+gtest/preinstall: gtest/googlemock/preinstall
+.PHONY : gtest/preinstall
+
+# Recursive "clean" directory target.
+gtest/clean: gtest/googlemock/clean
+.PHONY : gtest/clean
+
+#=============================================================================
+# Directory level rules for directory gtest/googlemock
+
+# Recursive "all" directory target.
+gtest/googlemock/all: gtest/googlemock/CMakeFiles/gmock.dir/all
+gtest/googlemock/all: gtest/googlemock/CMakeFiles/gmock_main.dir/all
+gtest/googlemock/all: gtest/googletest/all
+.PHONY : gtest/googlemock/all
+
+# Recursive "codegen" directory target.
+gtest/googlemock/codegen: gtest/googlemock/CMakeFiles/gmock.dir/codegen
+gtest/googlemock/codegen: gtest/googlemock/CMakeFiles/gmock_main.dir/codegen
+gtest/googlemock/codegen: gtest/googletest/codegen
+.PHONY : gtest/googlemock/codegen
+
+# Recursive "preinstall" directory target.
+gtest/googlemock/preinstall: gtest/googletest/preinstall
+.PHONY : gtest/googlemock/preinstall
+
+# Recursive "clean" directory target.
+gtest/googlemock/clean: gtest/googlemock/CMakeFiles/gmock.dir/clean
+gtest/googlemock/clean: gtest/googlemock/CMakeFiles/gmock_main.dir/clean
+gtest/googlemock/clean: gtest/googletest/clean
+.PHONY : gtest/googlemock/clean
+
+#=============================================================================
+# Directory level rules for directory gtest/googletest
+
+# Recursive "all" directory target.
+gtest/googletest/all: gtest/googletest/CMakeFiles/gtest.dir/all
+gtest/googletest/all: gtest/googletest/CMakeFiles/gtest_main.dir/all
+.PHONY : gtest/googletest/all
+
+# Recursive "codegen" directory target.
+gtest/googletest/codegen: gtest/googletest/CMakeFiles/gtest.dir/codegen
+gtest/googletest/codegen: gtest/googletest/CMakeFiles/gtest_main.dir/codegen
+.PHONY : gtest/googletest/codegen
+
+# Recursive "preinstall" directory target.
+gtest/googletest/preinstall:
+.PHONY : gtest/googletest/preinstall
+
+# Recursive "clean" directory target.
+gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest.dir/clean
+gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest_main.dir/clean
+.PHONY : gtest/googletest/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/minidfs.dir
@@ -85,12 +161,12 @@ clean: CMakeFiles/minidfs.dir/clean
 CMakeFiles/minidfs.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12 "Built target minidfs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=12,13,14,15,16,17 "Built target minidfs"
 .PHONY : CMakeFiles/minidfs.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/minidfs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 12
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 6
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/minidfs.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
 .PHONY : CMakeFiles/minidfs.dir/rule
@@ -102,13 +178,240 @@ minidfs: CMakeFiles/minidfs.dir/rule
 # codegen rule for target.
 CMakeFiles/minidfs.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=1,2,3,4,5,6,7,8,9,10,11,12 "Finished codegen for target minidfs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=12,13,14,15,16,17 "Finished codegen for target minidfs"
 .PHONY : CMakeFiles/minidfs.dir/codegen
 
 # clean rule for target.
 CMakeFiles/minidfs.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/clean
 .PHONY : CMakeFiles/minidfs.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/minidfs_server.dir
+
+# All Build rule for target.
+CMakeFiles/minidfs_server.dir/all: CMakeFiles/minidfs.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=20,21,22,23,24,25,26,27,28 "Built target minidfs_server"
+.PHONY : CMakeFiles/minidfs_server.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/minidfs_server.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 15
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/minidfs_server.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
+.PHONY : CMakeFiles/minidfs_server.dir/rule
+
+# Convenience name for target.
+minidfs_server: CMakeFiles/minidfs_server.dir/rule
+.PHONY : minidfs_server
+
+# codegen rule for target.
+CMakeFiles/minidfs_server.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=20,21,22,23,24,25,26,27,28 "Finished codegen for target minidfs_server"
+.PHONY : CMakeFiles/minidfs_server.dir/codegen
+
+# clean rule for target.
+CMakeFiles/minidfs_server.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/clean
+.PHONY : CMakeFiles/minidfs_server.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/minidfs_client.dir
+
+# All Build rule for target.
+CMakeFiles/minidfs_client.dir/all: CMakeFiles/minidfs.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=18,19 "Built target minidfs_client"
+.PHONY : CMakeFiles/minidfs_client.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/minidfs_client.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 8
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/minidfs_client.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
+.PHONY : CMakeFiles/minidfs_client.dir/rule
+
+# Convenience name for target.
+minidfs_client: CMakeFiles/minidfs_client.dir/rule
+.PHONY : minidfs_client
+
+# codegen rule for target.
+CMakeFiles/minidfs_client.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=18,19 "Finished codegen for target minidfs_client"
+.PHONY : CMakeFiles/minidfs_client.dir/codegen
+
+# clean rule for target.
+CMakeFiles/minidfs_client.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/clean
+.PHONY : CMakeFiles/minidfs_client.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/dfs_tests.dir
+
+# All Build rule for target.
+CMakeFiles/dfs_tests.dir/all: CMakeFiles/minidfs.dir/all
+CMakeFiles/dfs_tests.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
+CMakeFiles/dfs_tests.dir/all: gtest/googletest/CMakeFiles/gtest_main.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=1,2,3 "Built target dfs_tests"
+.PHONY : CMakeFiles/dfs_tests.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/dfs_tests.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 13
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/dfs_tests.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
+.PHONY : CMakeFiles/dfs_tests.dir/rule
+
+# Convenience name for target.
+dfs_tests: CMakeFiles/dfs_tests.dir/rule
+.PHONY : dfs_tests
+
+# codegen rule for target.
+CMakeFiles/dfs_tests.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=1,2,3 "Finished codegen for target dfs_tests"
+.PHONY : CMakeFiles/dfs_tests.dir/codegen
+
+# clean rule for target.
+CMakeFiles/dfs_tests.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/clean
+.PHONY : CMakeFiles/dfs_tests.dir/clean
+
+#=============================================================================
+# Target rules for target gtest/googlemock/CMakeFiles/gmock.dir
+
+# All Build rule for target.
+gtest/googlemock/CMakeFiles/gmock.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/depend
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=4,5 "Built target gmock"
+.PHONY : gtest/googlemock/CMakeFiles/gmock.dir/all
+
+# Build rule for subdir invocation for target.
+gtest/googlemock/CMakeFiles/gmock.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest/googlemock/CMakeFiles/gmock.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
+.PHONY : gtest/googlemock/CMakeFiles/gmock.dir/rule
+
+# Convenience name for target.
+gmock: gtest/googlemock/CMakeFiles/gmock.dir/rule
+.PHONY : gmock
+
+# codegen rule for target.
+gtest/googlemock/CMakeFiles/gmock.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=4,5 "Finished codegen for target gmock"
+.PHONY : gtest/googlemock/CMakeFiles/gmock.dir/codegen
+
+# clean rule for target.
+gtest/googlemock/CMakeFiles/gmock.dir/clean:
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/clean
+.PHONY : gtest/googlemock/CMakeFiles/gmock.dir/clean
+
+#=============================================================================
+# Target rules for target gtest/googlemock/CMakeFiles/gmock_main.dir
+
+# All Build rule for target.
+gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googlemock/CMakeFiles/gmock.dir/all
+gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/depend
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=6,7 "Built target gmock_main"
+.PHONY : gtest/googlemock/CMakeFiles/gmock_main.dir/all
+
+# Build rule for subdir invocation for target.
+gtest/googlemock/CMakeFiles/gmock_main.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 6
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest/googlemock/CMakeFiles/gmock_main.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
+.PHONY : gtest/googlemock/CMakeFiles/gmock_main.dir/rule
+
+# Convenience name for target.
+gmock_main: gtest/googlemock/CMakeFiles/gmock_main.dir/rule
+.PHONY : gmock_main
+
+# codegen rule for target.
+gtest/googlemock/CMakeFiles/gmock_main.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=6,7 "Finished codegen for target gmock_main"
+.PHONY : gtest/googlemock/CMakeFiles/gmock_main.dir/codegen
+
+# clean rule for target.
+gtest/googlemock/CMakeFiles/gmock_main.dir/clean:
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/clean
+.PHONY : gtest/googlemock/CMakeFiles/gmock_main.dir/clean
+
+#=============================================================================
+# Target rules for target gtest/googletest/CMakeFiles/gtest.dir
+
+# All Build rule for target.
+gtest/googletest/CMakeFiles/gtest.dir/all:
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/depend
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=8,9 "Built target gtest"
+.PHONY : gtest/googletest/CMakeFiles/gtest.dir/all
+
+# Build rule for subdir invocation for target.
+gtest/googletest/CMakeFiles/gtest.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 2
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest/googletest/CMakeFiles/gtest.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
+.PHONY : gtest/googletest/CMakeFiles/gtest.dir/rule
+
+# Convenience name for target.
+gtest: gtest/googletest/CMakeFiles/gtest.dir/rule
+.PHONY : gtest
+
+# codegen rule for target.
+gtest/googletest/CMakeFiles/gtest.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=8,9 "Finished codegen for target gtest"
+.PHONY : gtest/googletest/CMakeFiles/gtest.dir/codegen
+
+# clean rule for target.
+gtest/googletest/CMakeFiles/gtest.dir/clean:
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/clean
+.PHONY : gtest/googletest/CMakeFiles/gtest.dir/clean
+
+#=============================================================================
+# Target rules for target gtest/googletest/CMakeFiles/gtest_main.dir
+
+# All Build rule for target.
+gtest/googletest/CMakeFiles/gtest_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/depend
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=10,11 "Built target gtest_main"
+.PHONY : gtest/googletest/CMakeFiles/gtest_main.dir/all
+
+# Build rule for subdir invocation for target.
+gtest/googletest/CMakeFiles/gtest_main.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 4
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest/googletest/CMakeFiles/gtest_main.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
+.PHONY : gtest/googletest/CMakeFiles/gtest_main.dir/rule
+
+# Convenience name for target.
+gtest_main: gtest/googletest/CMakeFiles/gtest_main.dir/rule
+.PHONY : gtest_main
+
+# codegen rule for target.
+gtest/googletest/CMakeFiles/gtest_main.dir/codegen:
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/codegen
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=10,11 "Finished codegen for target gtest_main"
+.PHONY : gtest/googletest/CMakeFiles/gtest_main.dir/codegen
+
+# clean rule for target.
+gtest/googletest/CMakeFiles/gtest_main.dir/clean:
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/clean
+.PHONY : gtest/googletest/CMakeFiles/gtest_main.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

@@ -1,4 +1,5 @@
-# cmake/setup_grpc.cmake
+# cmake/setup_proto.cmake
+
 
 set(GRPC_DIR ${CMAKE_SOURCE_DIR}/proto_src)
 

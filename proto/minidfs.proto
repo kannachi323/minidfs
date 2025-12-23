@@ -30,7 +30,7 @@ service MiniDFSService {
 // Add your message types here
 message FileBuffer {
     string client_id = 1;
-    string filepath = 2;
+    string file_path = 2;
     bytes data = 3;
     uint64 offset = 4;
 }
@@ -41,11 +41,11 @@ message StoreFileRes {
 }
 
 message FetchFileReq {
-    string filepath = 1;
+    string file_path = 1;
 }
 
 message DeleteFileReq {
-    string filepath = 1;
+    string file_path = 1;
 }
 
 message DeleteFileRes {
@@ -54,37 +54,29 @@ message DeleteFileRes {
 }
 
 message FileInfo {
-    string filepath = 1;
+    string file_path = 1;
     uint64 size = 2;
     uint64 last_modified = 3;
-    uint64 created_at = 4;
     uint32 crc = 5;
 }
 
-message ListAllFilesReq {}
+message ListAllFilesReq {
+    string dir_path = 1;
+}
 
 message ListAllFilesRes {
     repeated FileInfo files = 1;
 }
 
 message FileStatusReq {
-    string filepath = 1;
+    string file_path = 1;
 }
 
 message WriteLockReq {
     string client_id = 1;
-    string filepath = 2;
+    string file_path = 2;
 }
 
 message WriteLockRes {
     bool success = 1;
-}
-
-message CallbackListReq {
-    string name = 1;
-}
-
-message CallbackListRes {
-    uint64 version = 1;
-    repeated FileInfo files = 2;
 }

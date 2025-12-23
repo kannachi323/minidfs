@@ -65,6 +65,16 @@ CMAKE_BINARY_DIR = /Users/mtccool668/projects/minidfs/build
 #=============================================================================
 # Targets provided globally by CMake.
 
+# Special rule for the target test
+test:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running tests..."
+	/opt/homebrew/bin/ctest $(ARGS)
+.PHONY : test
+
+# Special rule for the target test
+test/fast: test
+.PHONY : test/fast
+
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Running CMake cache editor..."
@@ -84,6 +94,51 @@ rebuild_cache:
 # Special rule for the target rebuild_cache
 rebuild_cache/fast: rebuild_cache
 .PHONY : rebuild_cache/fast
+
+# Special rule for the target list_install_components
+list_install_components:
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Available install components are: \"gmock\" \"gtest\""
+.PHONY : list_install_components
+
+# Special rule for the target list_install_components
+list_install_components/fast: list_install_components
+.PHONY : list_install_components/fast
+
+# Special rule for the target install
+install: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
+	/opt/homebrew/bin/cmake -P cmake_install.cmake
+.PHONY : install
+
+# Special rule for the target install
+install/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Install the project..."
+	/opt/homebrew/bin/cmake -P cmake_install.cmake
+.PHONY : install/fast
+
+# Special rule for the target install/local
+install/local: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
+	/opt/homebrew/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local
+
+# Special rule for the target install/local
+install/local/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing only the local directory..."
+	/opt/homebrew/bin/cmake -DCMAKE_INSTALL_LOCAL_ONLY=1 -P cmake_install.cmake
+.PHONY : install/local/fast
+
+# Special rule for the target install/strip
+install/strip: preinstall
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
+	/opt/homebrew/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip
+
+# Special rule for the target install/strip
+install/strip/fast: preinstall/fast
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Installing the project stripped..."
+	/opt/homebrew/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+.PHONY : install/strip/fast
 
 # The main all target
 all: cmake_check_build_system
@@ -129,36 +184,199 @@ minidfs/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/build
 .PHONY : minidfs/fast
 
-dfs/main.o: dfs/main.cpp.o
-.PHONY : dfs/main.o
+#=============================================================================
+# Target rules for targets named minidfs_server
+
+# Build rule for target.
+minidfs_server: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 minidfs_server
+.PHONY : minidfs_server
+
+# fast build rule for target.
+minidfs_server/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/build
+.PHONY : minidfs_server/fast
+
+#=============================================================================
+# Target rules for targets named minidfs_client
+
+# Build rule for target.
+minidfs_client: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 minidfs_client
+.PHONY : minidfs_client
+
+# fast build rule for target.
+minidfs_client/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/build
+.PHONY : minidfs_client/fast
+
+#=============================================================================
+# Target rules for targets named dfs_tests
+
+# Build rule for target.
+dfs_tests: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 dfs_tests
+.PHONY : dfs_tests
+
+# fast build rule for target.
+dfs_tests/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/build
+.PHONY : dfs_tests/fast
+
+#=============================================================================
+# Target rules for targets named gmock
+
+# Build rule for target.
+gmock: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock
+.PHONY : gmock
+
+# fast build rule for target.
+gmock/fast:
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/build
+.PHONY : gmock/fast
+
+#=============================================================================
+# Target rules for targets named gmock_main
+
+# Build rule for target.
+gmock_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gmock_main
+.PHONY : gmock_main
+
+# fast build rule for target.
+gmock_main/fast:
+	$(MAKE) $(MAKESILENT) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/build
+.PHONY : gmock_main/fast
+
+#=============================================================================
+# Target rules for targets named gtest
+
+# Build rule for target.
+gtest: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest
+.PHONY : gtest
+
+# fast build rule for target.
+gtest/fast:
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
+.PHONY : gtest/fast
+
+#=============================================================================
+# Target rules for targets named gtest_main
+
+# Build rule for target.
+gtest_main: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 gtest_main
+.PHONY : gtest_main
+
+# fast build rule for target.
+gtest_main/fast:
+	$(MAKE) $(MAKESILENT) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/build
+.PHONY : gtest_main/fast
+
+dfs/client.o: dfs/client.cpp.o
+.PHONY : dfs/client.o
 
 # target to build an object file
-dfs/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/main.cpp.o
-.PHONY : dfs/main.cpp.o
+dfs/client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/dfs/client.cpp.o
+.PHONY : dfs/client.cpp.o
 
-dfs/main.i: dfs/main.cpp.i
-.PHONY : dfs/main.i
+dfs/client.i: dfs/client.cpp.i
+.PHONY : dfs/client.i
 
 # target to preprocess a source file
-dfs/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/main.cpp.i
-.PHONY : dfs/main.cpp.i
+dfs/client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/dfs/client.cpp.i
+.PHONY : dfs/client.cpp.i
 
-dfs/main.s: dfs/main.cpp.s
-.PHONY : dfs/main.s
+dfs/client.s: dfs/client.cpp.s
+.PHONY : dfs/client.s
 
 # target to generate assembly for a file
-dfs/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/main.cpp.s
-.PHONY : dfs/main.cpp.s
+dfs/client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/dfs/client.cpp.s
+.PHONY : dfs/client.cpp.s
+
+dfs/file_manager.o: dfs/file_manager.cpp.o
+.PHONY : dfs/file_manager.o
+
+# target to build an object file
+dfs/file_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/file_manager.cpp.o
+.PHONY : dfs/file_manager.cpp.o
+
+dfs/file_manager.i: dfs/file_manager.cpp.i
+.PHONY : dfs/file_manager.i
+
+# target to preprocess a source file
+dfs/file_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/file_manager.cpp.i
+.PHONY : dfs/file_manager.cpp.i
+
+dfs/file_manager.s: dfs/file_manager.cpp.s
+.PHONY : dfs/file_manager.s
+
+# target to generate assembly for a file
+dfs/file_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/file_manager.cpp.s
+.PHONY : dfs/file_manager.cpp.s
+
+dfs/minidfs_client.o: dfs/minidfs_client.cpp.o
+.PHONY : dfs/minidfs_client.o
+
+# target to build an object file
+dfs/minidfs_client.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.o
+.PHONY : dfs/minidfs_client.cpp.o
+
+dfs/minidfs_client.i: dfs/minidfs_client.cpp.i
+.PHONY : dfs/minidfs_client.i
+
+# target to preprocess a source file
+dfs/minidfs_client.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.i
+.PHONY : dfs/minidfs_client.cpp.i
+
+dfs/minidfs_client.s: dfs/minidfs_client.cpp.s
+.PHONY : dfs/minidfs_client.s
+
+# target to generate assembly for a file
+dfs/minidfs_client.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.s
+.PHONY : dfs/minidfs_client.cpp.s
+
+dfs/minidfs_impl.o: dfs/minidfs_impl.cpp.o
+.PHONY : dfs/minidfs_impl.o
+
+# target to build an object file
+dfs/minidfs_impl.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.o
+.PHONY : dfs/minidfs_impl.cpp.o
+
+dfs/minidfs_impl.i: dfs/minidfs_impl.cpp.i
+.PHONY : dfs/minidfs_impl.i
+
+# target to preprocess a source file
+dfs/minidfs_impl.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.i
+.PHONY : dfs/minidfs_impl.cpp.i
+
+dfs/minidfs_impl.s: dfs/minidfs_impl.cpp.s
+.PHONY : dfs/minidfs_impl.s
+
+# target to generate assembly for a file
+dfs/minidfs_impl.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.s
+.PHONY : dfs/minidfs_impl.cpp.s
 
 dfs/server.o: dfs/server.cpp.o
 .PHONY : dfs/server.o
 
 # target to build an object file
 dfs/server.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/server.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/dfs/server.cpp.o
 .PHONY : dfs/server.cpp.o
 
 dfs/server.i: dfs/server.cpp.i
@@ -166,7 +384,7 @@ dfs/server.i: dfs/server.cpp.i
 
 # target to preprocess a source file
 dfs/server.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/server.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/dfs/server.cpp.i
 .PHONY : dfs/server.cpp.i
 
 dfs/server.s: dfs/server.cpp.s
@@ -174,7 +392,7 @@ dfs/server.s: dfs/server.cpp.s
 
 # target to generate assembly for a file
 dfs/server.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/server.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/dfs/server.cpp.s
 .PHONY : dfs/server.cpp.s
 
 gui/imgui/backends/imgui_impl_glfw.o: gui/imgui/backends/imgui_impl_glfw.cpp.o
@@ -182,7 +400,7 @@ gui/imgui/backends/imgui_impl_glfw.o: gui/imgui/backends/imgui_impl_glfw.cpp.o
 
 # target to build an object file
 gui/imgui/backends/imgui_impl_glfw.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/backends/imgui_impl_glfw.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/backends/imgui_impl_glfw.cpp.o
 .PHONY : gui/imgui/backends/imgui_impl_glfw.cpp.o
 
 gui/imgui/backends/imgui_impl_glfw.i: gui/imgui/backends/imgui_impl_glfw.cpp.i
@@ -190,7 +408,7 @@ gui/imgui/backends/imgui_impl_glfw.i: gui/imgui/backends/imgui_impl_glfw.cpp.i
 
 # target to preprocess a source file
 gui/imgui/backends/imgui_impl_glfw.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/backends/imgui_impl_glfw.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/backends/imgui_impl_glfw.cpp.i
 .PHONY : gui/imgui/backends/imgui_impl_glfw.cpp.i
 
 gui/imgui/backends/imgui_impl_glfw.s: gui/imgui/backends/imgui_impl_glfw.cpp.s
@@ -198,7 +416,7 @@ gui/imgui/backends/imgui_impl_glfw.s: gui/imgui/backends/imgui_impl_glfw.cpp.s
 
 # target to generate assembly for a file
 gui/imgui/backends/imgui_impl_glfw.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/backends/imgui_impl_glfw.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/backends/imgui_impl_glfw.cpp.s
 .PHONY : gui/imgui/backends/imgui_impl_glfw.cpp.s
 
 gui/imgui/backends/imgui_impl_metal.o: gui/imgui/backends/imgui_impl_metal.mm.o
@@ -206,7 +424,7 @@ gui/imgui/backends/imgui_impl_metal.o: gui/imgui/backends/imgui_impl_metal.mm.o
 
 # target to build an object file
 gui/imgui/backends/imgui_impl_metal.mm.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/backends/imgui_impl_metal.mm.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/backends/imgui_impl_metal.mm.o
 .PHONY : gui/imgui/backends/imgui_impl_metal.mm.o
 
 gui/imgui/imgui.o: gui/imgui/imgui.cpp.o
@@ -214,7 +432,7 @@ gui/imgui/imgui.o: gui/imgui/imgui.cpp.o
 
 # target to build an object file
 gui/imgui/imgui.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui.cpp.o
 .PHONY : gui/imgui/imgui.cpp.o
 
 gui/imgui/imgui.i: gui/imgui/imgui.cpp.i
@@ -222,7 +440,7 @@ gui/imgui/imgui.i: gui/imgui/imgui.cpp.i
 
 # target to preprocess a source file
 gui/imgui/imgui.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui.cpp.i
 .PHONY : gui/imgui/imgui.cpp.i
 
 gui/imgui/imgui.s: gui/imgui/imgui.cpp.s
@@ -230,7 +448,7 @@ gui/imgui/imgui.s: gui/imgui/imgui.cpp.s
 
 # target to generate assembly for a file
 gui/imgui/imgui.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui.cpp.s
 .PHONY : gui/imgui/imgui.cpp.s
 
 gui/imgui/imgui_demo.o: gui/imgui/imgui_demo.cpp.o
@@ -238,7 +456,7 @@ gui/imgui/imgui_demo.o: gui/imgui/imgui_demo.cpp.o
 
 # target to build an object file
 gui/imgui/imgui_demo.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_demo.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_demo.cpp.o
 .PHONY : gui/imgui/imgui_demo.cpp.o
 
 gui/imgui/imgui_demo.i: gui/imgui/imgui_demo.cpp.i
@@ -246,7 +464,7 @@ gui/imgui/imgui_demo.i: gui/imgui/imgui_demo.cpp.i
 
 # target to preprocess a source file
 gui/imgui/imgui_demo.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_demo.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_demo.cpp.i
 .PHONY : gui/imgui/imgui_demo.cpp.i
 
 gui/imgui/imgui_demo.s: gui/imgui/imgui_demo.cpp.s
@@ -254,7 +472,7 @@ gui/imgui/imgui_demo.s: gui/imgui/imgui_demo.cpp.s
 
 # target to generate assembly for a file
 gui/imgui/imgui_demo.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_demo.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_demo.cpp.s
 .PHONY : gui/imgui/imgui_demo.cpp.s
 
 gui/imgui/imgui_draw.o: gui/imgui/imgui_draw.cpp.o
@@ -262,7 +480,7 @@ gui/imgui/imgui_draw.o: gui/imgui/imgui_draw.cpp.o
 
 # target to build an object file
 gui/imgui/imgui_draw.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_draw.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_draw.cpp.o
 .PHONY : gui/imgui/imgui_draw.cpp.o
 
 gui/imgui/imgui_draw.i: gui/imgui/imgui_draw.cpp.i
@@ -270,7 +488,7 @@ gui/imgui/imgui_draw.i: gui/imgui/imgui_draw.cpp.i
 
 # target to preprocess a source file
 gui/imgui/imgui_draw.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_draw.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_draw.cpp.i
 .PHONY : gui/imgui/imgui_draw.cpp.i
 
 gui/imgui/imgui_draw.s: gui/imgui/imgui_draw.cpp.s
@@ -278,7 +496,7 @@ gui/imgui/imgui_draw.s: gui/imgui/imgui_draw.cpp.s
 
 # target to generate assembly for a file
 gui/imgui/imgui_draw.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_draw.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_draw.cpp.s
 .PHONY : gui/imgui/imgui_draw.cpp.s
 
 gui/imgui/imgui_tables.o: gui/imgui/imgui_tables.cpp.o
@@ -286,7 +504,7 @@ gui/imgui/imgui_tables.o: gui/imgui/imgui_tables.cpp.o
 
 # target to build an object file
 gui/imgui/imgui_tables.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_tables.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_tables.cpp.o
 .PHONY : gui/imgui/imgui_tables.cpp.o
 
 gui/imgui/imgui_tables.i: gui/imgui/imgui_tables.cpp.i
@@ -294,7 +512,7 @@ gui/imgui/imgui_tables.i: gui/imgui/imgui_tables.cpp.i
 
 # target to preprocess a source file
 gui/imgui/imgui_tables.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_tables.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_tables.cpp.i
 .PHONY : gui/imgui/imgui_tables.cpp.i
 
 gui/imgui/imgui_tables.s: gui/imgui/imgui_tables.cpp.s
@@ -302,7 +520,7 @@ gui/imgui/imgui_tables.s: gui/imgui/imgui_tables.cpp.s
 
 # target to generate assembly for a file
 gui/imgui/imgui_tables.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_tables.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_tables.cpp.s
 .PHONY : gui/imgui/imgui_tables.cpp.s
 
 gui/imgui/imgui_widgets.o: gui/imgui/imgui_widgets.cpp.o
@@ -310,7 +528,7 @@ gui/imgui/imgui_widgets.o: gui/imgui/imgui_widgets.cpp.o
 
 # target to build an object file
 gui/imgui/imgui_widgets.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_widgets.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_widgets.cpp.o
 .PHONY : gui/imgui/imgui_widgets.cpp.o
 
 gui/imgui/imgui_widgets.i: gui/imgui/imgui_widgets.cpp.i
@@ -318,7 +536,7 @@ gui/imgui/imgui_widgets.i: gui/imgui/imgui_widgets.cpp.i
 
 # target to preprocess a source file
 gui/imgui/imgui_widgets.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_widgets.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_widgets.cpp.i
 .PHONY : gui/imgui/imgui_widgets.cpp.i
 
 gui/imgui/imgui_widgets.s: gui/imgui/imgui_widgets.cpp.s
@@ -326,7 +544,7 @@ gui/imgui/imgui_widgets.s: gui/imgui/imgui_widgets.cpp.s
 
 # target to generate assembly for a file
 gui/imgui/imgui_widgets.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/gui/imgui/imgui_widgets.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/gui/imgui/imgui_widgets.cpp.s
 .PHONY : gui/imgui/imgui_widgets.cpp.s
 
 proto_src/minidfs.grpc.pb.o: proto_src/minidfs.grpc.pb.cc.o
@@ -377,6 +595,54 @@ proto_src/minidfs.pb.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.s
 .PHONY : proto_src/minidfs.pb.cc.s
 
+tests/file_manager_tests.o: tests/file_manager_tests.cpp.o
+.PHONY : tests/file_manager_tests.o
+
+# target to build an object file
+tests/file_manager_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/tests/file_manager_tests.cpp.o
+.PHONY : tests/file_manager_tests.cpp.o
+
+tests/file_manager_tests.i: tests/file_manager_tests.cpp.i
+.PHONY : tests/file_manager_tests.i
+
+# target to preprocess a source file
+tests/file_manager_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/tests/file_manager_tests.cpp.i
+.PHONY : tests/file_manager_tests.cpp.i
+
+tests/file_manager_tests.s: tests/file_manager_tests.cpp.s
+.PHONY : tests/file_manager_tests.s
+
+# target to generate assembly for a file
+tests/file_manager_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/tests/file_manager_tests.cpp.s
+.PHONY : tests/file_manager_tests.cpp.s
+
+tests/minidfs_client_tests.o: tests/minidfs_client_tests.cpp.o
+.PHONY : tests/minidfs_client_tests.o
+
+# target to build an object file
+tests/minidfs_client_tests.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/tests/minidfs_client_tests.cpp.o
+.PHONY : tests/minidfs_client_tests.cpp.o
+
+tests/minidfs_client_tests.i: tests/minidfs_client_tests.cpp.i
+.PHONY : tests/minidfs_client_tests.i
+
+# target to preprocess a source file
+tests/minidfs_client_tests.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/tests/minidfs_client_tests.cpp.i
+.PHONY : tests/minidfs_client_tests.cpp.i
+
+tests/minidfs_client_tests.s: tests/minidfs_client_tests.cpp.s
+.PHONY : tests/minidfs_client_tests.s
+
+# target to generate assembly for a file
+tests/minidfs_client_tests.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/dfs_tests.dir/build.make CMakeFiles/dfs_tests.dir/tests/minidfs_client_tests.cpp.s
+.PHONY : tests/minidfs_client_tests.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -384,11 +650,32 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... install/strip"
+	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... test"
+	@echo "... dfs_tests"
+	@echo "... gmock"
+	@echo "... gmock_main"
+	@echo "... gtest"
+	@echo "... gtest_main"
 	@echo "... minidfs"
-	@echo "... dfs/main.o"
-	@echo "... dfs/main.i"
-	@echo "... dfs/main.s"
+	@echo "... minidfs_client"
+	@echo "... minidfs_server"
+	@echo "... dfs/client.o"
+	@echo "... dfs/client.i"
+	@echo "... dfs/client.s"
+	@echo "... dfs/file_manager.o"
+	@echo "... dfs/file_manager.i"
+	@echo "... dfs/file_manager.s"
+	@echo "... dfs/minidfs_client.o"
+	@echo "... dfs/minidfs_client.i"
+	@echo "... dfs/minidfs_client.s"
+	@echo "... dfs/minidfs_impl.o"
+	@echo "... dfs/minidfs_impl.i"
+	@echo "... dfs/minidfs_impl.s"
 	@echo "... dfs/server.o"
 	@echo "... dfs/server.i"
 	@echo "... dfs/server.s"
@@ -417,6 +704,12 @@ help:
 	@echo "... proto_src/minidfs.pb.o"
 	@echo "... proto_src/minidfs.pb.i"
 	@echo "... proto_src/minidfs.pb.s"
+	@echo "... tests/file_manager_tests.o"
+	@echo "... tests/file_manager_tests.i"
+	@echo "... tests/file_manager_tests.s"
+	@echo "... tests/minidfs_client_tests.o"
+	@echo "... tests/minidfs_client_tests.i"
+	@echo "... tests/minidfs_client_tests.s"
 .PHONY : help
 
 
