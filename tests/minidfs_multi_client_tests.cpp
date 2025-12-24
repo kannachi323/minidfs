@@ -9,7 +9,7 @@
 #include "dfs/minidfs_impl.h"
 #include "dfs/utils.h"
 
-class MiniDFSClientTest : public ::testing::Test {
+class MiniDFSMultiClientTest : public ::testing::Test {
 protected:
     static std::atomic<int> file_counter;
     
@@ -23,14 +23,14 @@ protected:
 
     void SetUpClient() {
         shared_channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-        client = std::make_unique<MiniDFSClient>(shared_channel, "storage");
+        client = std::make_unique<MiniDFSClient>(shared_channel, "storage/client");
         std::string client_id = GetLocalIP();
         client->BeginSync(client_id);
     }
 
     void SetUpServer() {
         std::string server_address = "localhost:50051";
-        server_impl = std::make_unique<MiniDFSImpl>("storage");
+        server_impl = std::make_unique<MiniDFSImpl>("storage/server");
 
         grpc::ServerBuilder builder;
         builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
@@ -61,26 +61,11 @@ protected:
     }
 };
 
-std::atomic<int> MiniDFSClientTest::file_counter{0};
+std::atomic<int> MiniDFSMultiClientTest::file_counter{0};
 
-TEST_F(MiniDFSClientTest, AcquireWriteLock) {
-    std::string filename = GetTestFile(); // Store it to use the SAME name twice
-    
-    grpc::StatusCode status1 = client->GetWriteLock("client1", filename);
-    EXPECT_EQ(status1, grpc::StatusCode::OK);
 
-    // Now this correctly attempts to lock the same file
-    grpc::StatusCode status2 = client->GetWriteLock("client2", filename);
-    EXPECT_NE(status2, grpc::StatusCode::OK); 
 
-}
-
-TEST_F(MiniDFSClientTest, WriteWithLockSucceeds) {
-    // StoreFile internally calls GetTestFile() essentially
-    EXPECT_EQ(client->StoreFile("client1", GetTestFile(), "hello world"), grpc::StatusCode::OK);
-}
-
-TEST_F(MiniDFSClientTest, WriteFailsIfLockedByOther) {
+TEST_F(MiniDFSMultiClientTest, WriteFailsIfLockedByOther) {
     std::string filename = GetTestFile();
     std::string content = "should fail";
 
@@ -92,7 +77,7 @@ TEST_F(MiniDFSClientTest, WriteFailsIfLockedByOther) {
     EXPECT_NE(status, grpc::StatusCode::OK);
 }
 
-TEST_F(MiniDFSClientTest, ConcurrentWrites) {
+TEST_F(MiniDFSMultiClientTest, ConcurrentWrites) {
     const int num_threads = 8;
     std::atomic<int> success_count{0};
     std::string filename = GetTestFile(); // All threads compete for this ONE file
@@ -116,53 +101,4 @@ TEST_F(MiniDFSClientTest, ConcurrentWrites) {
 
     // Exactly 1 thread should succeed in acquiring the lock and writing
     EXPECT_EQ(success_count, 1);
-   
 }
-
-TEST_F(MiniDFSClientTest, ReadAfterWrite) {
-    std::string filename = GetTestFile();
-    std::string content = "Data Integrity Check";
-    std::string client_id = "client_reader";
-
-    // 1. Write the file
-    ASSERT_EQ(client->StoreFile(client_id, filename, "asdfasdf"), grpc::StatusCode::OK);
-}
-
-TEST_F(MiniDFSClientTest, DeleteFile) {
-    std::string filename = GetTestFile();
-    std::string content = "To be deleted";
-
-    // 1. Write the file
-    ASSERT_EQ(client->StoreFile("client_deleter", filename, content), grpc::StatusCode::OK);
-
-    // 2. Delete the file
-    grpc::StatusCode del_status = client->DeleteFile(filename);
-    EXPECT_EQ(del_status, grpc::StatusCode::OK);
-
-    // 3. Attempt to fetch the deleted file
-    bool found = true;
-    for (int i = 0; i < 10; ++i) {
-        if (client->FetchFile(filename) == grpc::StatusCode::NOT_FOUND) {
-            found = false;
-            break;
-        }
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-
-    EXPECT_FALSE(found) << "File still exists after deletion attempts";
-
-}
-
-TEST_F(MiniDFSClientTest, ListAllFiles) {
-    std::string filename1 = GetTestFile();
-    std::string filename2 = GetTestFile();
-
-    // 1. Write two files
-    ASSERT_EQ(client->StoreFile("client_lister", filename1, "File One"), grpc::StatusCode::OK);
-    ASSERT_EQ(client->StoreFile("client_lister", filename2, "File Two"), grpc::StatusCode::OK);
-
-    // 2. List all files in the root directory
-    grpc::StatusCode list_status = client->ListAllFiles("./");
-    EXPECT_EQ(list_status, grpc::StatusCode::OK);
-}
-

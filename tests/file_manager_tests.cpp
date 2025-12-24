@@ -4,21 +4,23 @@
 #include <vector>
 #include "dfs/file_manager.h"
 
+std::string mount_path = "storage/server";
+
 TEST(FileManagerTest, AcquireWriteLock) {
-    FileManager fm("storage");
+    FileManager fm(mount_path);
 
     EXPECT_TRUE(fm.AcquireWriteLock("client1", "a.txt"));
     EXPECT_FALSE(fm.AcquireWriteLock("client2", "a.txt"));
 }
 
 TEST(FileManagerTest, WriteWithoutLockFails) {
-    FileManager fm("storage");
+    FileManager fm(mount_path);
 
     EXPECT_FALSE(fm.WriteFile("client1", "a.txt", "hello"));
 }
 
 TEST(FileManagerTest, WriteWithLockSucceeds) {
-    FileManager fm("storage");
+    FileManager fm(mount_path);
 
     EXPECT_TRUE(fm.AcquireWriteLock("client1", "a.txt"));
     EXPECT_TRUE(fm.WriteFile("client1", "a.txt", "hello"));
@@ -38,7 +40,7 @@ TEST(FileManagerTest, LockReleaseAllowsAnotherClient) {
 
 
 TEST(FileManagerTest, ConcurrentWrites) {
-    FileManager fm("/tmp/testfs");
+    FileManager fm(mount_path);
 
     const int num_threads = 8;
     std::atomic<int> success_count{0};
@@ -76,20 +78,20 @@ TEST(FileManagerTest, ReadAfterWrite) {
 }
 
 TEST(FileManagerTest, SameFileHasEqualHash) {
-    FileManager fm("/tmp/testfs");
+    FileManager fm(mount_path);
     std::string client = "client_1";
     fm.AcquireWriteLock(client, "file.txt");
 
     EXPECT_TRUE(fm.WriteFile(client, "file.txt", "hello world"));
 
-    std::string hash1 = fm.GetFileHash("file.txt");
-    std::string hash2 = fm.GetFileHash("file.txt");
+    std::string hash1 = fm.GetFileHash(mount_path, "file.txt");
+    std::string hash2 = fm.GetFileHash(mount_path, "file.txt");
 
     EXPECT_EQ(hash1, hash2);
 }
 
 TEST(FileManagerTest, DifferentFileHasDifferentHash) {
-    FileManager fm("storage");
+    FileManager fm(mount_path);
     std::string client = "client_1";
     fm.AcquireWriteLock(client, "file1.txt");
     fm.AcquireWriteLock(client, "file2.txt");
@@ -97,8 +99,8 @@ TEST(FileManagerTest, DifferentFileHasDifferentHash) {
     EXPECT_TRUE(fm.WriteFile(client, "file1.txt", "hello world"));
     EXPECT_TRUE(fm.WriteFile(client, "file2.txt", "goodbye world"));
 
-    std::string hash1 = fm.GetFileHash("storage/file1.txt");
-    std::string hash2 = fm.GetFileHash("storage/file2.txt");
+    std::string hash1 = fm.GetFileHash(mount_path, "file1.txt");
+    std::string hash2 = fm.GetFileHash(mount_path, "file2.txt");
 
     EXPECT_NE(hash1, hash2);
 }

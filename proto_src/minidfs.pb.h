@@ -2352,9 +2352,25 @@ class DeleteFileReq final : public ::google::protobuf::Message
 
   // accessors -------------------------------------------------------
   enum : int {
-    kFilePathFieldNumber = 1,
+    kClientIdFieldNumber = 1,
+    kFilePathFieldNumber = 2,
   };
-  // string file_path = 1;
+  // string client_id = 1;
+  void clear_client_id() ;
+  const ::std::string& client_id() const;
+  template <typename Arg_ = const ::std::string&, typename... Args_>
+  void set_client_id(Arg_&& arg, Args_... args);
+  ::std::string* PROTOBUF_NONNULL mutable_client_id();
+  [[nodiscard]] ::std::string* PROTOBUF_NULLABLE release_client_id();
+  void set_allocated_client_id(::std::string* PROTOBUF_NULLABLE value);
+
+  private:
+  const ::std::string& _internal_client_id() const;
+  PROTOBUF_ALWAYS_INLINE void _internal_set_client_id(const ::std::string& value);
+  ::std::string* PROTOBUF_NONNULL _internal_mutable_client_id();
+
+  public:
+  // string file_path = 2;
   void clear_file_path() ;
   const ::std::string& file_path() const;
   template <typename Arg_ = const ::std::string&, typename... Args_>
@@ -2373,8 +2389,8 @@ class DeleteFileReq final : public ::google::protobuf::Message
  private:
   class _Internal;
   friend class ::google::protobuf::internal::TcParser;
-  static const ::google::protobuf::internal::TcParseTable<0, 1,
-                                   0, 39,
+  static const ::google::protobuf::internal::TcParseTable<1, 2,
+                                   0, 48,
                                    2>
       _table_;
 
@@ -2395,6 +2411,7 @@ class DeleteFileReq final : public ::google::protobuf::Message
         const DeleteFileReq& from_msg);
     ::google::protobuf::internal::HasBits<1> _has_bits_;
     ::google::protobuf::internal::CachedSize _cached_size_;
+    ::google::protobuf::internal::ArenaStringPtr client_id_;
     ::google::protobuf::internal::ArenaStringPtr file_path_;
     PROTOBUF_TSAN_DECLARE_MEMBER
   };
@@ -3223,12 +3240,77 @@ inline void FetchFileReq::set_allocated_file_path(::std::string* PROTOBUF_NULLAB
 
 // DeleteFileReq
 
-// string file_path = 1;
+// string client_id = 1;
+inline void DeleteFileReq::clear_client_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.client_id_.ClearToEmpty();
+  ClearHasBit(_impl_._has_bits_[0],
+                  0x00000001U);
+}
+inline const ::std::string& DeleteFileReq::client_id() const
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  // @@protoc_insertion_point(field_get:minidfs.DeleteFileReq.client_id)
+  return _internal_client_id();
+}
+template <typename Arg_, typename... Args_>
+PROTOBUF_ALWAYS_INLINE void DeleteFileReq::set_client_id(Arg_&& arg, Args_... args) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  _impl_.client_id_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
+  // @@protoc_insertion_point(field_set:minidfs.DeleteFileReq.client_id)
+}
+inline ::std::string* PROTOBUF_NONNULL DeleteFileReq::mutable_client_id()
+    ABSL_ATTRIBUTE_LIFETIME_BOUND {
+  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  ::std::string* _s = _internal_mutable_client_id();
+  // @@protoc_insertion_point(field_mutable:minidfs.DeleteFileReq.client_id)
+  return _s;
+}
+inline const ::std::string& DeleteFileReq::_internal_client_id() const {
+  ::google::protobuf::internal::TSanRead(&_impl_);
+  return _impl_.client_id_.Get();
+}
+inline void DeleteFileReq::_internal_set_client_id(const ::std::string& value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  _impl_.client_id_.Set(value, GetArena());
+}
+inline ::std::string* PROTOBUF_NONNULL DeleteFileReq::_internal_mutable_client_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  return _impl_.client_id_.Mutable( GetArena());
+}
+inline ::std::string* PROTOBUF_NULLABLE DeleteFileReq::release_client_id() {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  // @@protoc_insertion_point(field_release:minidfs.DeleteFileReq.client_id)
+  if (!CheckHasBit(_impl_._has_bits_[0], 0x00000001U)) {
+    return nullptr;
+  }
+  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  auto* released = _impl_.client_id_.Release();
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString()) {
+    _impl_.client_id_.Set("", GetArena());
+  }
+  return released;
+}
+inline void DeleteFileReq::set_allocated_client_id(::std::string* PROTOBUF_NULLABLE value) {
+  ::google::protobuf::internal::TSanWrite(&_impl_);
+  if (value != nullptr) {
+    SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  } else {
+    ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  }
+  _impl_.client_id_.SetAllocated(value, GetArena());
+  if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.client_id_.IsDefault()) {
+    _impl_.client_id_.Set("", GetArena());
+  }
+  // @@protoc_insertion_point(field_set_allocated:minidfs.DeleteFileReq.client_id)
+}
+
+// string file_path = 2;
 inline void DeleteFileReq::clear_file_path() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   _impl_.file_path_.ClearToEmpty();
   ClearHasBit(_impl_._has_bits_[0],
-                  0x00000001U);
+                  0x00000002U);
 }
 inline const ::std::string& DeleteFileReq::file_path() const
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
@@ -3238,13 +3320,13 @@ inline const ::std::string& DeleteFileReq::file_path() const
 template <typename Arg_, typename... Args_>
 PROTOBUF_ALWAYS_INLINE void DeleteFileReq::set_file_path(Arg_&& arg, Args_... args) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
-  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
   _impl_.file_path_.Set(static_cast<Arg_&&>(arg), args..., GetArena());
   // @@protoc_insertion_point(field_set:minidfs.DeleteFileReq.file_path)
 }
 inline ::std::string* PROTOBUF_NONNULL DeleteFileReq::mutable_file_path()
     ABSL_ATTRIBUTE_LIFETIME_BOUND {
-  SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+  SetHasBit(_impl_._has_bits_[0], 0x00000002U);
   ::std::string* _s = _internal_mutable_file_path();
   // @@protoc_insertion_point(field_mutable:minidfs.DeleteFileReq.file_path)
   return _s;
@@ -3264,10 +3346,10 @@ inline ::std::string* PROTOBUF_NONNULL DeleteFileReq::_internal_mutable_file_pat
 inline ::std::string* PROTOBUF_NULLABLE DeleteFileReq::release_file_path() {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   // @@protoc_insertion_point(field_release:minidfs.DeleteFileReq.file_path)
-  if (!CheckHasBit(_impl_._has_bits_[0], 0x00000001U)) {
+  if (!CheckHasBit(_impl_._has_bits_[0], 0x00000002U)) {
     return nullptr;
   }
-  ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+  ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
   auto* released = _impl_.file_path_.Release();
   if (::google::protobuf::internal::DebugHardenForceCopyDefaultString()) {
     _impl_.file_path_.Set("", GetArena());
@@ -3277,9 +3359,9 @@ inline ::std::string* PROTOBUF_NULLABLE DeleteFileReq::release_file_path() {
 inline void DeleteFileReq::set_allocated_file_path(::std::string* PROTOBUF_NULLABLE value) {
   ::google::protobuf::internal::TSanWrite(&_impl_);
   if (value != nullptr) {
-    SetHasBit(_impl_._has_bits_[0], 0x00000001U);
+    SetHasBit(_impl_._has_bits_[0], 0x00000002U);
   } else {
-    ClearHasBit(_impl_._has_bits_[0], 0x00000001U);
+    ClearHasBit(_impl_._has_bits_[0], 0x00000002U);
   }
   _impl_.file_path_.SetAllocated(value, GetArena());
   if (::google::protobuf::internal::DebugHardenForceCopyDefaultString() && _impl_.file_path_.IsDefault()) {

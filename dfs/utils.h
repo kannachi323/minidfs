@@ -4,7 +4,7 @@
 #include <ifaddrs.h>
 #include <string>
 
-std::string GetLocalIP() {
+inline std::string GetLocalIP() {
     struct ifaddrs* ifAddrStruct = nullptr;
     struct ifaddrs* ifa = nullptr;
     std::string ip = "127.0.0.1";

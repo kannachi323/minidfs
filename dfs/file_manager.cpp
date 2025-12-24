@@ -10,10 +10,12 @@ bool FileManager::AcquireWriteLock(
     const std::string& client_id,
     const std::string& file_path)
 {
+    fs::path full_path = fs::path(mount_path_) / file_path;
+
     std::lock_guard<std::mutex> lock(mu_);
-    auto it = write_locks_.find(file_path);
+    auto it = write_locks_.find(full_path.string());
     if (it == write_locks_.end()) {
-        write_locks_[file_path] = client_id;
+        write_locks_[full_path] = client_id;
         return true;
     }
     return false;
@@ -23,8 +25,10 @@ bool FileManager::ReleaseWriteLock(
     const std::string& client_id,
     const std::string& file_path)
 {
+    fs::path full_path = fs::path(mount_path_) / file_path;
+
     std::lock_guard<std::mutex> lock(mu_);
-    auto it = write_locks_.find(file_path);
+    auto it = write_locks_.find(full_path.string());
     if (it != write_locks_.end() && it->second == client_id) {
         write_locks_.erase(it);
         return true;
@@ -38,11 +42,11 @@ bool FileManager::WriteFile(
     const std::string& file_path,
     const std::string& data)
 {
-    fs::path full_path = ResolvePath(mount_path_, file_path);
+    fs::path full_path = fs::path(mount_path_) / file_path;
 
     {
         std::lock_guard<std::mutex> lock(mu_);
-        auto it = write_locks_.find(file_path);
+        auto it = write_locks_.find(full_path.string());
         if (it == write_locks_.end() || it->second != client_id) {
             return false;
         }
@@ -50,7 +54,7 @@ bool FileManager::WriteFile(
 
     fs::create_directories(full_path.parent_path());
 
-    std::ofstream file(full_path, std::ios::binary | std::ios::out);
+    std::ofstream file(full_path.string(), std::ios::binary | std::ios::out);
 
     if (!file.is_open()) {
         return false;
@@ -63,8 +67,9 @@ bool FileManager::WriteFile(
 bool FileManager::ReadFile(const std::string& file_path, uint64_t offset,
                             size_t chunk_size, minidfs::FileBuffer* buf) 
 {
-    fs::path full_path = ResolvePath(mount_path_, file_path);
-    std::ifstream file(full_path, std::ios::binary);
+    fs::path full_path = fs::path(mount_path_) / file_path;
+
+    std::ifstream file(full_path.string(), std::ios::binary);
     if (!file.is_open()) return false;
 
     file.seekg(offset);
@@ -79,19 +84,45 @@ bool FileManager::ReadFile(const std::string& file_path, uint64_t offset,
     return true;
 }
 
+bool FileManager::DeleteFile(
+    const std::string& client_id,
+    const std::string& file_path)
+{
+    fs::path full_path = fs::path(mount_path_) / file_path;
+
+    std::cout << "Attempting to delete file at path: " << full_path << std::endl;
+
+    {
+        std::lock_guard<std::mutex> lock(mu_);
+        auto it = write_locks_.find(full_path.string());
+        if (it == write_locks_.end() || it->second != client_id) {
+            std::cout << "DeleteFile: Write lock not held by client " << client_id << std::endl;
+            return false;
+        }
+    }
+
+    std::error_code ec;
+    fs::remove(full_path, ec);
+
+    return true;
+}
+
 
 fs::path FileManager::ResolvePath(const std::string& mount_path, const std::string& file_path)
 {
     return fs::path(mount_path) / file_path;
 }
 
-bool FileManager::FileExists(const std::string& file_path)
+bool FileManager::FileExists(const std::string& mount_path, const std::string& file_path)
 {
-    return fs::exists(fs::path(file_path));
+    fs::path full_path = fs::path(mount_path) / file_path;
+    return fs::exists(full_path);
 }
 
-std::string FileManager::GetFileHash(const std::string& full_path) {
-    std::ifstream file(full_path, std::ios::binary);
+std::string FileManager::GetFileHash(const std::string& mount_path, const std::string& file_path) {
+    fs::path full_path = fs::path(mount_path) / file_path;
+
+    std::ifstream file(full_path.string(), std::ios::binary);
     if (!file) return "";
 
     EVP_MD_CTX* mdctx = EVP_MD_CTX_new();

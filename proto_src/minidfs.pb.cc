@@ -312,6 +312,9 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT
 inline constexpr DeleteFileReq::Impl_::Impl_(
     ::_pbi::ConstantInitialized) noexcept
       : _cached_size_{0},
+        client_id_(
+            &::google::protobuf::internal::fixed_address_empty_string,
+            ::_pbi::ConstantInitialized()),
         file_path_(
             &::google::protobuf::internal::fixed_address_empty_string,
             ::_pbi::ConstantInitialized()) {}
@@ -420,9 +423,11 @@ const ::uint32_t
         0,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::minidfs::DeleteFileReq, _impl_._has_bits_),
-        4, // hasbit index offset
+        5, // hasbit index offset
+        PROTOBUF_FIELD_OFFSET(::minidfs::DeleteFileReq, _impl_.client_id_),
         PROTOBUF_FIELD_OFFSET(::minidfs::DeleteFileReq, _impl_.file_path_),
         0,
+        1,
         0x081, // bitmap
         PROTOBUF_FIELD_OFFSET(::minidfs::DeleteFileRes, _impl_._has_bits_),
         5, // hasbit index offset
@@ -486,15 +491,15 @@ static const ::_pbi::MigrationSchema
         {11, sizeof(::minidfs::StoreFileRes)},
         {18, sizeof(::minidfs::FetchFileReq)},
         {23, sizeof(::minidfs::DeleteFileReq)},
-        {28, sizeof(::minidfs::DeleteFileRes)},
-        {35, sizeof(::minidfs::FileInfo)},
-        {42, sizeof(::minidfs::ListAllFilesReq)},
-        {47, sizeof(::minidfs::ListAllFilesRes)},
-        {52, sizeof(::minidfs::FileStatusReq)},
-        {57, sizeof(::minidfs::WriteLockReq)},
-        {64, sizeof(::minidfs::WriteLockRes)},
-        {69, sizeof(::minidfs::FileUpdateReq)},
-        {74, sizeof(::minidfs::FileUpdateRes)},
+        {30, sizeof(::minidfs::DeleteFileRes)},
+        {37, sizeof(::minidfs::FileInfo)},
+        {44, sizeof(::minidfs::ListAllFilesReq)},
+        {49, sizeof(::minidfs::ListAllFilesRes)},
+        {54, sizeof(::minidfs::FileStatusReq)},
+        {59, sizeof(::minidfs::WriteLockReq)},
+        {66, sizeof(::minidfs::WriteLockRes)},
+        {71, sizeof(::minidfs::FileUpdateReq)},
+        {76, sizeof(::minidfs::FileUpdateRes)},
 };
 static const ::_pb::Message* PROTOBUF_NONNULL const file_default_instances[] = {
     &::minidfs::_FileBuffer_default_instance_._instance,
@@ -517,39 +522,39 @@ const char descriptor_table_protodef_minidfs_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "\n\tclient_id\030\001 \001(\t\022\021\n\tfile_path\030\002 \001(\t\022\014\n\004"
     "data\030\003 \001(\014\022\016\n\006offset\030\004 \001(\004\",\n\014StoreFileR"
     "es\022\013\n\003msg\030\001 \001(\t\022\017\n\007success\030\002 \001(\010\"!\n\014Fetc"
-    "hFileReq\022\021\n\tfile_path\030\001 \001(\t\"\"\n\rDeleteFil"
-    "eReq\022\021\n\tfile_path\030\001 \001(\t\"-\n\rDeleteFileRes"
-    "\022\013\n\003msg\030\001 \001(\t\022\017\n\007success\030\002 \001(\010\"+\n\010FileIn"
-    "fo\022\021\n\tfile_path\030\001 \001(\t\022\014\n\004hash\030\002 \001(\t\"#\n\017L"
-    "istAllFilesReq\022\020\n\010dir_path\030\001 \001(\t\"3\n\017List"
-    "AllFilesRes\022 \n\005files\030\001 \003(\0132\021.minidfs.Fil"
-    "eInfo\"\"\n\rFileStatusReq\022\021\n\tfile_path\030\001 \001("
-    "\t\"4\n\014WriteLockReq\022\021\n\tclient_id\030\001 \001(\t\022\021\n\t"
-    "file_path\030\002 \001(\t\"\037\n\014WriteLockRes\022\017\n\007succe"
-    "ss\030\001 \001(\010\"\"\n\rFileUpdateReq\022\021\n\tclient_id\030\001"
-    " \001(\t\"m\n\rFileUpdateRes\022%\n\004type\030\001 \001(\0162\027.mi"
-    "nidfs.FileUpdateType\022$\n\tfile_info\030\002 \001(\0132"
-    "\021.minidfs.FileInfo\022\017\n\007version\030\003 \001(\004*8\n\016F"
-    "ileUpdateType\022\013\n\007CREATED\020\000\022\014\n\010MODIFIED\020\001"
-    "\022\013\n\007DELETED\020\0022\312\003\n\016MiniDFSService\0229\n\tStor"
-    "eFile\022\023.minidfs.FileBuffer\032\025.minidfs.Sto"
-    "reFileRes(\001\0229\n\tFetchFile\022\025.minidfs.Fetch"
-    "FileReq\032\023.minidfs.FileBuffer0\001\022B\n\014ListAl"
-    "lFiles\022\030.minidfs.ListAllFilesReq\032\030.minid"
-    "fs.ListAllFilesRes\022:\n\rGetFileStatus\022\026.mi"
-    "nidfs.FileStatusReq\032\021.minidfs.FileInfo\022<"
-    "\n\014GetWriteLock\022\025.minidfs.WriteLockReq\032\025."
-    "minidfs.WriteLockRes\022<\n\nDeleteFile\022\026.min"
-    "idfs.DeleteFileReq\032\026.minidfs.DeleteFileR"
-    "es\022F\n\022FileUpdateCallback\022\026.minidfs.FileU"
-    "pdateReq\032\026.minidfs.FileUpdateRes0\001b\006prot"
-    "o3"
+    "hFileReq\022\021\n\tfile_path\030\001 \001(\t\"5\n\rDeleteFil"
+    "eReq\022\021\n\tclient_id\030\001 \001(\t\022\021\n\tfile_path\030\002 \001"
+    "(\t\"-\n\rDeleteFileRes\022\013\n\003msg\030\001 \001(\t\022\017\n\007succ"
+    "ess\030\002 \001(\010\"+\n\010FileInfo\022\021\n\tfile_path\030\001 \001(\t"
+    "\022\014\n\004hash\030\002 \001(\t\"#\n\017ListAllFilesReq\022\020\n\010dir"
+    "_path\030\001 \001(\t\"3\n\017ListAllFilesRes\022 \n\005files\030"
+    "\001 \003(\0132\021.minidfs.FileInfo\"\"\n\rFileStatusRe"
+    "q\022\021\n\tfile_path\030\001 \001(\t\"4\n\014WriteLockReq\022\021\n\t"
+    "client_id\030\001 \001(\t\022\021\n\tfile_path\030\002 \001(\t\"\037\n\014Wr"
+    "iteLockRes\022\017\n\007success\030\001 \001(\010\"\"\n\rFileUpdat"
+    "eReq\022\021\n\tclient_id\030\001 \001(\t\"m\n\rFileUpdateRes"
+    "\022%\n\004type\030\001 \001(\0162\027.minidfs.FileUpdateType\022"
+    "$\n\tfile_info\030\002 \001(\0132\021.minidfs.FileInfo\022\017\n"
+    "\007version\030\003 \001(\004*8\n\016FileUpdateType\022\013\n\007CREA"
+    "TED\020\000\022\014\n\010MODIFIED\020\001\022\013\n\007DELETED\020\0022\312\003\n\016Min"
+    "iDFSService\0229\n\tStoreFile\022\023.minidfs.FileB"
+    "uffer\032\025.minidfs.StoreFileRes(\001\0229\n\tFetchF"
+    "ile\022\025.minidfs.FetchFileReq\032\023.minidfs.Fil"
+    "eBuffer0\001\022B\n\014ListAllFiles\022\030.minidfs.List"
+    "AllFilesReq\032\030.minidfs.ListAllFilesRes\022:\n"
+    "\rGetFileStatus\022\026.minidfs.FileStatusReq\032\021"
+    ".minidfs.FileInfo\022<\n\014GetWriteLock\022\025.mini"
+    "dfs.WriteLockReq\032\025.minidfs.WriteLockRes\022"
+    "<\n\nDeleteFile\022\026.minidfs.DeleteFileReq\032\026."
+    "minidfs.DeleteFileRes\022F\n\022FileUpdateCallb"
+    "ack\022\026.minidfs.FileUpdateReq\032\026.minidfs.Fi"
+    "leUpdateRes0\001b\006proto3"
 };
 static ::absl::once_flag descriptor_table_minidfs_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_minidfs_2eproto = {
     false,
     false,
-    1202,
+    1221,
     descriptor_table_protodef_minidfs_2eproto,
     "minidfs.proto",
     &descriptor_table_minidfs_2eproto_once,
@@ -1565,6 +1570,7 @@ PROTOBUF_NDEBUG_INLINE DeleteFileReq::Impl_::Impl_(
     [[maybe_unused]] const ::minidfs::DeleteFileReq& from_msg)
       : _has_bits_{from._has_bits_},
         _cached_size_{0},
+        client_id_(arena, from.client_id_),
         file_path_(arena, from.file_path_) {}
 
 DeleteFileReq::DeleteFileReq(
@@ -1587,6 +1593,7 @@ PROTOBUF_NDEBUG_INLINE DeleteFileReq::Impl_::Impl_(
     [[maybe_unused]] ::google::protobuf::internal::InternalVisibility visibility,
     [[maybe_unused]] ::google::protobuf::Arena* PROTOBUF_NULLABLE arena)
       : _cached_size_{0},
+        client_id_(arena),
         file_path_(arena) {}
 
 inline void DeleteFileReq::SharedCtor(::_pb::Arena* PROTOBUF_NULLABLE arena) {
@@ -1603,6 +1610,7 @@ inline void DeleteFileReq::SharedDtor(MessageLite& self) {
   }
   this_._internal_metadata_.Delete<::google::protobuf::UnknownFieldSet>();
   ABSL_DCHECK(this_.GetArena() == nullptr);
+  this_._impl_.client_id_.Destroy();
   this_._impl_.file_path_.Destroy();
   this_._impl_.~Impl_();
 }
@@ -1650,16 +1658,16 @@ DeleteFileReq::GetClassData() const {
   return DeleteFileReq_class_data_.base();
 }
 PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORITY1
-const ::_pbi::TcParseTable<0, 1, 0, 39, 2>
+const ::_pbi::TcParseTable<1, 2, 0, 48, 2>
 DeleteFileReq::_table_ = {
   {
     PROTOBUF_FIELD_OFFSET(DeleteFileReq, _impl_._has_bits_),
     0, // no _extensions_
-    1, 0,  // max_field_number, fast_idx_mask
+    2, 8,  // max_field_number, fast_idx_mask
     offsetof(decltype(_table_), field_lookup_table),
-    4294967294,  // skipmap
+    4294967292,  // skipmap
     offsetof(decltype(_table_), field_entries),
-    1,  // num_field_entries
+    2,  // num_field_entries
     0,  // num_aux_entries
     offsetof(decltype(_table_), field_names),  // no aux_entries
     DeleteFileReq_class_data_.base(),
@@ -1669,20 +1677,27 @@ DeleteFileReq::_table_ = {
     ::_pbi::TcParser::GetTable<::minidfs::DeleteFileReq>(),  // to_prefetch
     #endif  // PROTOBUF_PREFETCH_PARSE_TABLE
   }, {{
-    // string file_path = 1;
+    // string file_path = 2;
+    {::_pbi::TcParser::FastUS1,
+     {18, 1, 0,
+      PROTOBUF_FIELD_OFFSET(DeleteFileReq, _impl_.file_path_)}},
+    // string client_id = 1;
     {::_pbi::TcParser::FastUS1,
      {10, 0, 0,
-      PROTOBUF_FIELD_OFFSET(DeleteFileReq, _impl_.file_path_)}},
+      PROTOBUF_FIELD_OFFSET(DeleteFileReq, _impl_.client_id_)}},
   }}, {{
     65535, 65535
   }}, {{
-    // string file_path = 1;
-    {PROTOBUF_FIELD_OFFSET(DeleteFileReq, _impl_.file_path_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string client_id = 1;
+    {PROTOBUF_FIELD_OFFSET(DeleteFileReq, _impl_.client_id_), _Internal::kHasBitsOffset + 0, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
+    // string file_path = 2;
+    {PROTOBUF_FIELD_OFFSET(DeleteFileReq, _impl_.file_path_), _Internal::kHasBitsOffset + 1, 0, (0 | ::_fl::kFcOptional | ::_fl::kUtf8String | ::_fl::kRepAString)},
   }},
   // no aux_entries
   {{
-    "\25\11\0\0\0\0\0\0"
+    "\25\11\11\0\0\0\0\0"
     "minidfs.DeleteFileReq"
+    "client_id"
     "file_path"
   }},
 };
@@ -1694,8 +1709,13 @@ PROTOBUF_NOINLINE void DeleteFileReq::Clear() {
   (void) cached_has_bits;
 
   cached_has_bits = _impl_._has_bits_[0];
-  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-    _impl_.file_path_.ClearNonDefaultToEmpty();
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      _impl_.client_id_.ClearNonDefaultToEmpty();
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      _impl_.file_path_.ClearNonDefaultToEmpty();
+    }
   }
   _impl_._has_bits_.Clear();
   _internal_metadata_.Clear<::google::protobuf::UnknownFieldSet>();
@@ -1720,13 +1740,23 @@ PROTOBUF_NOINLINE void DeleteFileReq::Clear() {
   (void)cached_has_bits;
 
   cached_has_bits = this_._impl_._has_bits_[0];
-  // string file_path = 1;
+  // string client_id = 1;
   if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+    if (!this_._internal_client_id().empty()) {
+      const ::std::string& _s = this_._internal_client_id();
+      ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+          _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "minidfs.DeleteFileReq.client_id");
+      target = stream->WriteStringMaybeAliased(1, _s, target);
+    }
+  }
+
+  // string file_path = 2;
+  if (CheckHasBit(cached_has_bits, 0x00000002U)) {
     if (!this_._internal_file_path().empty()) {
       const ::std::string& _s = this_._internal_file_path();
       ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           _s.data(), static_cast<int>(_s.length()), ::google::protobuf::internal::WireFormatLite::SERIALIZE, "minidfs.DeleteFileReq.file_path");
-      target = stream->WriteStringMaybeAliased(1, _s, target);
+      target = stream->WriteStringMaybeAliased(2, _s, target);
     }
   }
 
@@ -1753,10 +1783,18 @@ PROTOBUF_NOINLINE void DeleteFileReq::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void)cached_has_bits;
 
-   {
-    // string file_path = 1;
-    cached_has_bits = this_._impl_._has_bits_[0];
+  ::_pbi::Prefetch5LinesFrom7Lines(&this_);
+  cached_has_bits = this_._impl_._has_bits_[0];
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    // string client_id = 1;
     if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (!this_._internal_client_id().empty()) {
+        total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
+                                        this_._internal_client_id());
+      }
+    }
+    // string file_path = 2;
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
       if (!this_._internal_file_path().empty()) {
         total_size += 1 + ::google::protobuf::internal::WireFormatLite::StringSize(
                                         this_._internal_file_path());
@@ -1781,12 +1819,23 @@ void DeleteFileReq::MergeImpl(::google::protobuf::MessageLite& to_msg,
   (void)cached_has_bits;
 
   cached_has_bits = from._impl_._has_bits_[0];
-  if (CheckHasBit(cached_has_bits, 0x00000001U)) {
-    if (!from._internal_file_path().empty()) {
-      _this->_internal_set_file_path(from._internal_file_path());
-    } else {
-      if (_this->_impl_.file_path_.IsDefault()) {
-        _this->_internal_set_file_path("");
+  if (BatchCheckHasBit(cached_has_bits, 0x00000003U)) {
+    if (CheckHasBit(cached_has_bits, 0x00000001U)) {
+      if (!from._internal_client_id().empty()) {
+        _this->_internal_set_client_id(from._internal_client_id());
+      } else {
+        if (_this->_impl_.client_id_.IsDefault()) {
+          _this->_internal_set_client_id("");
+        }
+      }
+    }
+    if (CheckHasBit(cached_has_bits, 0x00000002U)) {
+      if (!from._internal_file_path().empty()) {
+        _this->_internal_set_file_path(from._internal_file_path());
+      } else {
+        if (_this->_impl_.file_path_.IsDefault()) {
+          _this->_internal_set_file_path("");
+        }
       }
     }
   }
@@ -1809,6 +1858,7 @@ void DeleteFileReq::InternalSwap(DeleteFileReq* PROTOBUF_RESTRICT PROTOBUF_NONNU
   ABSL_DCHECK_EQ(arena, other->GetArena());
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(_impl_._has_bits_[0], other->_impl_._has_bits_[0]);
+  ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.client_id_, &other->_impl_.client_id_, arena);
   ::_pbi::ArenaStringPtr::InternalSwap(&_impl_.file_path_, &other->_impl_.file_path_, arena);
 }
 

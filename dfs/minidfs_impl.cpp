@@ -31,15 +31,14 @@ grpc::ServerUnaryReactor* MiniDFSImpl::GetFileStatus(
             minidfs::FileInfo* res) : service_(service), request_(req), response_(res)
         {
             std::error_code ec;
-            fs::path full_path = service_->file_manager_->ResolvePath(service_->mount_path_, req->file_path());
 
-            if (!fs::exists(full_path, ec)) {
+            if (FileManager::FileExists(service_->mount_path_, request_->file_path()) == false) {
                 Finish(grpc::Status(grpc::StatusCode::NOT_FOUND, "File not found"));
                 return;
             }
 
             response_->set_file_path(request_->file_path());
-            response_->set_hash(FileManager::GetFileHash(full_path.string()));
+            response_->set_hash(FileManager::GetFileHash(service_->mount_path_, request_->file_path()));
             Finish(grpc::Status::OK);
         }
 
@@ -76,7 +75,7 @@ grpc::ServerUnaryReactor* MiniDFSImpl::ListAllFiles(
                 auto file_info = res_->add_files();
                 fs::path rel = fs::relative(entry.path(), full_dir_path);
                 file_info->set_file_path(rel.string());
-                file_info->set_hash(FileManager::GetFileHash(entry.path().string()));
+                file_info->set_hash(FileManager::GetFileHash(service_->mount_path_, entry.path().string()));
             }
 
             Finish(grpc::Status::OK);
@@ -143,19 +142,14 @@ grpc::ServerUnaryReactor* MiniDFSImpl::DeleteFile(
             : service_(service), req_(req), res_(res)
         {
             std::error_code ec;
-            fs::path full_path = service_->file_manager_->ResolvePath(service_->mount_path_, req->file_path());
 
-            if (!fs::exists(full_path, ec)) {
+            if (!FileManager::FileExists(service_->mount_path_, req_->file_path())) {
                 Finish(grpc::Status(grpc::StatusCode::NOT_FOUND, "File not found"));
-                delete this;
                 return;
             }
-            fs::remove(full_path, ec);
-            if (ec) {
-                std::cerr << "Error removing file (error_code): " << ec.message() << std::endl;
-    
+            bool success = service_->file_manager_->DeleteFile(req->client_id(), req_->file_path());
+            if (!success) {
                 Finish(grpc::Status(grpc::StatusCode::INTERNAL, "Failed to delete file"));
-                delete this;
                 return;
             }
 
@@ -164,6 +158,10 @@ grpc::ServerUnaryReactor* MiniDFSImpl::DeleteFile(
         }
 
         void OnDone() override {
+            service_->file_manager_->ReleaseWriteLock(
+                req_->client_id(), req_->file_path());
+            service_->pubsub_manager_->Publish(
+                req_->file_path(), minidfs::FileUpdateType::DELETED);
             delete this;
         }
 
@@ -233,8 +231,8 @@ grpc::ServerWriteReactor<minidfs::FileBuffer>* MiniDFSImpl::FetchFile(
                 const std::string mount_path,
                 const minidfs::FetchFileReq* req)
             : service_(service), mount_path_(mount_path), req_(req)
-        {
-            if (service_->file_manager_->FileExists(FileManager::ResolvePath(mount_path, req_->file_path()).string())) {
+        {   
+            if (!service_->file_manager_->FileExists(service_->mount_path_, req_->file_path())) {
                 Finish(grpc::Status(grpc::StatusCode::NOT_FOUND, "File not found"));
                 return;
             }
@@ -297,8 +295,7 @@ grpc::ServerWriteReactor<minidfs::FileUpdateRes>* MiniDFSImpl::FileUpdateCallbac
             
             minidfs::FileInfo file_info;
             file_info.set_file_path(file_path);
-            std::string full_path = service_->file_manager_->ResolvePath(service_->mount_path_, file_path).string();
-            file_info.set_hash(FileManager::GetFileHash(full_path));
+            file_info.set_hash(FileManager::GetFileHash(service_->mount_path_, file_path));
 
             minidfs::FileUpdateRes res;
             res.set_type(type);

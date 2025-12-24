@@ -10,24 +10,14 @@ add_subdirectory(
 
 FILE(GLOB TEST_SRCS "tests/*.cpp")
 
-add_executable(dfs_tests
+add_executable(minidfs_tests
     ${TEST_SRCS}
 )
 
-target_link_libraries(dfs_tests PRIVATE
+target_link_libraries(minidfs_tests PRIVATE
     minidfs
     gtest_main
     gtest
     gRPC::grpc++
     protobuf::libprotobuf
-)
-
-add_test(
-    NAME dfs_file_manager_tests
-    COMMAND dfs_tests
-)
-
-set_tests_properties(dfs_file_manager_tests PROPERTIES
-    TIMEOUT 10
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )

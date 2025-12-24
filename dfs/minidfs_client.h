@@ -16,7 +16,7 @@ public:
     grpc::StatusCode GetFileStatus(const std::string& file_path);
     grpc::StatusCode ListAllFiles(const std::string& directory);
     grpc::StatusCode GetWriteLock(const std::string& client_id, const std::string& file_path);
-    grpc::StatusCode DeleteFile(const std::string& file_path);
+    grpc::StatusCode DeleteFile(const std::string& client_id, const std::string& file_path);
     grpc::StatusCode StoreFile(const std::string& client_id, const std::string& file_path, const std::string& content);
     grpc::StatusCode FetchFile(const std::string& file_path);
     grpc::StatusCode FileUpdateCallback(grpc::ClientContext* sync_context, const std::string& client_id);
@@ -35,5 +35,6 @@ private:
     std::atomic<bool> running_;
     std::unique_ptr<grpc::ClientContext> sync_context_;
 
-    friend class MiniDFSClientTest;
+    friend class MiniDFSSingleClientTest;
+    friend class MiniDFSMultiClientTest;
 };

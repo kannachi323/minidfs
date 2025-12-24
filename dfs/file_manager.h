@@ -27,18 +27,21 @@ public:
 
     bool ReadFile(const std::string& file_path, uint64_t offset,
                    size_t chunk_size, minidfs::FileBuffer* buf);
+
+    bool DeleteFile(const std::string& client_id, const std::string& file_path);
     
     static std::filesystem::path ResolvePath(const std::string& mount_path, const std::string& file_path);
 
-    static bool FileExists(const std::string& file_path);
+    static bool FileExists(const std::string& mount_path, const std::string& file_path);
 
-    static std::string GetFileHash(const std::string& full_path);
+    static std::string GetFileHash(const std::string& mount_path, const std::string& full_path);
 
 private:
+    std::string mount_path_;
+    
     std::mutex mu_;
     std::unordered_map<std::string, std::string> write_locks_;
-    std::string mount_path_;
 
-
-    friend class MiniDFSClientTest;
+    friend class MiniDFSSingleClientTest;
+    friend class MiniDFSMultiClientTest;
 };

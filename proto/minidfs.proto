@@ -54,7 +54,8 @@ message FetchFileReq {
 }
 
 message DeleteFileReq {
-    string file_path = 1;
+    string client_id = 1;
+    string file_path = 2;
 }
 
 message DeleteFileRes {

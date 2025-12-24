@@ -61,5 +61,6 @@ private:
     PubSubManager* pubsub_manager_;
     std::atomic<uint64_t> version_;
     
-    friend class MiniDFSClientTest;
+    friend class MiniDFSSingleClientTest;
+    friend class MiniDFSMultiClientTest;
 };
