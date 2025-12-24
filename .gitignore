@@ -1,6 +1,6 @@
 *.env
 
-build/*
+build
 libs/*
 
 

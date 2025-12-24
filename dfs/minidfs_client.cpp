@@ -16,25 +16,39 @@ MiniDFSClient::~MiniDFSClient() {
     }
 }
 
-void MiniDFSClient::Sync(const std::string& client_id) {
+void MiniDFSClient::BeginSync(const std::string& client_id) {
     running_.store(true);
+    
     file_update_thread_ = std::thread([this, client_id]() {
-        while (running_) {
-            grpc::StatusCode status = FileUpdateCallback(client_id);
-            if (status != grpc::StatusCode::OK) {
-                std::cerr << "FileUpdateCallback error: " << static_cast<int>(status) << std::endl;
-            }
+        sync_context_ = std::make_unique<grpc::ClientContext>();
+        
+        grpc::StatusCode status = this->FileUpdateCallback(sync_context_.get(), client_id);
+        
+        if (status != grpc::StatusCode::OK && status != grpc::StatusCode::CANCELLED) {
+            std::cerr << "FileUpdateCallback error: " << static_cast<int>(status) << std::endl;
         }
     });
+}
+
+void MiniDFSClient::EndSync() {
+    running_.store(false);  
+
+    if (sync_context_) {
+        sync_context_->TryCancel(); 
+    }
+
+    if (file_update_thread_.joinable()) {
+        file_update_thread_.join();
+    }
 }
 
 grpc::StatusCode MiniDFSClient::ClientStatusCode(const grpc::Status& status) {
     switch (status.error_code()) {
         case grpc::StatusCode::OK:                  return grpc::StatusCode::OK;
         case grpc::StatusCode::ABORTED:             return grpc::StatusCode::ABORTED;
-        case grpc::StatusCode::FAILED_PRECONDITION: return grpc::StatusCode::FAILED_PRECONDITION; // Added
+        case grpc::StatusCode::FAILED_PRECONDITION: return grpc::StatusCode::FAILED_PRECONDITION;
         case grpc::StatusCode::NOT_FOUND:           return grpc::StatusCode::NOT_FOUND;
-        case grpc::StatusCode::UNAVAILABLE:         return grpc::StatusCode::UNAVAILABLE; // Highly recommended
+        case grpc::StatusCode::UNAVAILABLE:         return grpc::StatusCode::UNAVAILABLE;
         default:                                    return grpc::StatusCode::CANCELLED;
     }
 }
@@ -68,10 +82,6 @@ grpc::StatusCode MiniDFSClient::ListAllFiles(const std::string& directory) {
         return ClientStatusCode(status);
     }
 
-    for (const auto& file_info : response.files()) {
-        std::cout << "File: " << file_info.file_path() << std::endl;
-    }
-
     return ClientStatusCode(status);
 }
 
@@ -96,12 +106,6 @@ grpc::StatusCode MiniDFSClient::DeleteFile(const std::string& file_path) {
     grpc::ClientContext context;
 
     grpc::Status status = stub_->DeleteFile(&context, request, &response);
-
-    if (status.ok() && response.success()) {
-        std::cout << "Successfully deleted file " << file_path << std::endl;
-    } else {
-        std::cerr << "Failed to delete file " << file_path << std::endl;
-    }
     
     return ClientStatusCode(status);
 }
@@ -117,7 +121,6 @@ grpc::StatusCode MiniDFSClient::StoreFile(const std::string& client_id, const st
     grpc::Status lock_status = stub_->GetWriteLock(&lock_ctx, lock_req, &lock_res);
 
     if (!lock_status.ok() || !lock_res.success()) {
-        std::cerr << "Failed to acquire write lock for " << target_path << std::endl;
         return ClientStatusCode(lock_status);
     }
 
@@ -138,11 +141,10 @@ grpc::StatusCode MiniDFSClient::StoreFile(const std::string& client_id, const st
     writer->WritesDone();
     grpc::Status status = writer->Finish();
 
-    if (status.ok()) {
-        std::cout << "StoreFile Success: " << response.msg() << std::endl;
-    } else {
+    if (!status.ok()) {
         std::cerr << "StoreFile Failed: " << status.error_message() << std::endl;
     }
+  
 
     return ClientStatusCode(status);
 }
@@ -172,18 +174,18 @@ grpc::StatusCode MiniDFSClient::FetchFile(const std::string& file_path) {
     return ClientStatusCode(status);
 }
 
-grpc::StatusCode MiniDFSClient::FileUpdateCallback(const std::string& client_id) {
+grpc::StatusCode MiniDFSClient::FileUpdateCallback(grpc::ClientContext* context, const std::string& client_id) {
     minidfs::FileUpdateReq request;
     request.set_client_id(client_id);
-    grpc::ClientContext context;
 
-    auto reader = stub_->FileUpdateCallback(&context, request);
+    auto reader = stub_->FileUpdateCallback(context, request);
 
     minidfs::FileUpdateRes res;
-    while (reader->Read(&res)) {
-        std::cout << "Received update for file: " << res.file_info().file_path()
+    while (running_ && reader->Read(&res)) {
+        std::cout << "File update received: " << res.file_info().file_path()
                   << " Type: " << res.type()
                   << " Version: " << res.version() << std::endl;
+        fflush(stdout);
     }
     grpc::Status status = reader->Finish();
     return ClientStatusCode(status);

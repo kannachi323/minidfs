@@ -7,6 +7,7 @@
 #include <fstream>
 #include "dfs/minidfs_client.h"
 #include "dfs/minidfs_impl.h"
+#include "dfs/utils.h"
 
 class MiniDFSClientTest : public ::testing::Test {
 protected:
@@ -20,22 +21,31 @@ protected:
     std::shared_ptr<grpc::Channel> shared_channel;
     std::unique_ptr<MiniDFSClient> client;
 
-    void SetUp() override {
-        std::string server_address = "localhost:50051";
+    void SetUpClient() {
+        shared_channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
+        client = std::make_unique<MiniDFSClient>(shared_channel, "storage");
+        std::string client_id = GetLocalIP();
+        client->BeginSync(client_id);
+    }
 
+    void SetUpServer() {
+        std::string server_address = "localhost:50051";
         server_impl = std::make_unique<MiniDFSImpl>("storage");
 
         grpc::ServerBuilder builder;
         builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
         builder.RegisterService(server_impl.get());
         server = builder.BuildAndStart();
+    }
 
-        // 3. Setup the Client
-        shared_channel = grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials());
-        client = std::make_unique<MiniDFSClient>(shared_channel, "storage");
+    void SetUp() override {
+        SetUpServer();
+        SetUpClient();
     }
 
     void TearDown() override {
+        client->EndSync();
+        client.reset();
         server->Shutdown();
         // server_impl and client are cleaned up by unique_ptr
     }
@@ -62,6 +72,7 @@ TEST_F(MiniDFSClientTest, AcquireWriteLock) {
     // Now this correctly attempts to lock the same file
     grpc::StatusCode status2 = client->GetWriteLock("client2", filename);
     EXPECT_NE(status2, grpc::StatusCode::OK); 
+
 }
 
 TEST_F(MiniDFSClientTest, WriteWithLockSucceeds) {
@@ -129,7 +140,29 @@ TEST_F(MiniDFSClientTest, DeleteFile) {
     EXPECT_EQ(del_status, grpc::StatusCode::OK);
 
     // 3. Attempt to fetch the deleted file
-    grpc::StatusCode fetch_status = client->FetchFile(filename);
-    EXPECT_EQ(fetch_status, grpc::StatusCode::NOT_FOUND);
+    bool found = true;
+    for (int i = 0; i < 10; ++i) {
+        if (client->FetchFile(filename) == grpc::StatusCode::NOT_FOUND) {
+            found = false;
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    EXPECT_FALSE(found) << "File still exists after deletion attempts";
+
+}
+
+TEST_F(MiniDFSClientTest, ListAllFiles) {
+    std::string filename1 = GetTestFile();
+    std::string filename2 = GetTestFile();
+
+    // 1. Write two files
+    ASSERT_EQ(client->StoreFile("client_lister", filename1, "File One"), grpc::StatusCode::OK);
+    ASSERT_EQ(client->StoreFile("client_lister", filename2, "File Two"), grpc::StatusCode::OK);
+
+    // 2. List all files in the root directory
+    grpc::StatusCode list_status = client->ListAllFiles("./");
+    EXPECT_EQ(list_status, grpc::StatusCode::OK);
 }
 

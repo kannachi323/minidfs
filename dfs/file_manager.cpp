@@ -39,7 +39,6 @@ bool FileManager::WriteFile(
     const std::string& data)
 {
     fs::path full_path = ResolvePath(mount_path_, file_path);
-    std::cout << "Writing to: " << full_path << std::endl;
 
     {
         std::lock_guard<std::mutex> lock(mu_);

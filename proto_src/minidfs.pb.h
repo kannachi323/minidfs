@@ -120,7 +120,7 @@ internal::EnumTraitsT<::minidfs::FileUpdateType_internal_data_>
 namespace minidfs {
 enum FileUpdateType : int {
   CREATED = 0,
-  UPDATED = 1,
+  MODIFIED = 1,
   DELETED = 2,
   FileUpdateType_INT_MIN_SENTINEL_DO_NOT_USE_ =
       ::std::numeric_limits<::int32_t>::min(),

@@ -24,6 +24,7 @@ bool PubSubManager::Unsubscribe(const std::string& client_id, IPubSubReactor* re
 
 void PubSubManager::Publish(const std::string& file_path, minidfs::FileUpdateType type) {
     std::lock_guard<std::mutex> lock(mu_);
+
     
     for (const auto& entry : registry_) {
         const std::string& client_id = entry.first;

@@ -69,8 +69,7 @@ grpc::ServerUnaryReactor* MiniDFSImpl::ListAllFiles(
             : service_(service), req_(req), res_(res)
         {
             std::error_code ec;
-            fs::path full_dir_path = service_->file_manager_->ResolvePath(service_->mount_path_, req->dir_path());
-            std::cout << "Listing files in directory: " << full_dir_path << std::endl;
+            fs::path full_dir_path = FileManager::ResolvePath(service_->mount_path_, req->dir_path());
             for (auto& entry : fs::recursive_directory_iterator(full_dir_path)) {
                 if (!entry.is_regular_file()) continue;
 
@@ -151,9 +150,10 @@ grpc::ServerUnaryReactor* MiniDFSImpl::DeleteFile(
                 delete this;
                 return;
             }
-
             fs::remove(full_path, ec);
             if (ec) {
+                std::cerr << "Error removing file (error_code): " << ec.message() << std::endl;
+    
                 Finish(grpc::Status(grpc::StatusCode::INTERNAL, "Failed to delete file"));
                 delete this;
                 return;
@@ -161,10 +161,12 @@ grpc::ServerUnaryReactor* MiniDFSImpl::DeleteFile(
 
             res_->set_success(true);
             Finish(grpc::Status::OK);
+        }
+
+        void OnDone() override {
             delete this;
         }
 
-        void OnDone() override {}
     private:
         MiniDFSImpl* service_;
         const minidfs::DeleteFileReq* req_;
@@ -189,7 +191,6 @@ grpc::ServerReadReactor<minidfs::FileBuffer>* MiniDFSImpl::StoreFile(
 
         void OnReadDone(bool ok) override {
             if (!ok) {
-                std::cout << current_.data() << std::endl;
                 service_->file_manager_->WriteFile(current_.client_id(), current_.file_path(), current_.data());  
                 response_->set_success(true);
                 response_->set_msg("File stored successfully");
@@ -207,6 +208,8 @@ grpc::ServerReadReactor<minidfs::FileBuffer>* MiniDFSImpl::StoreFile(
         void OnDone() override {
             service_->file_manager_->ReleaseWriteLock(
                 current_.client_id(), current_.file_path());
+            service_->pubsub_manager_->Publish(
+                current_.file_path(), minidfs::FileUpdateType::MODIFIED);
             delete this;
         }
     private:
@@ -227,10 +230,11 @@ grpc::ServerWriteReactor<minidfs::FileBuffer>* MiniDFSImpl::FetchFile(
     class Reactor : public grpc::ServerWriteReactor<minidfs::FileBuffer> {
     public:
         Reactor(MiniDFSImpl* service,
+                const std::string mount_path,
                 const minidfs::FetchFileReq* req)
-            : service_(service), req_(req)
+            : service_(service), mount_path_(mount_path), req_(req)
         {
-            if (service_->file_manager_->FileExists(req_->file_path())) {
+            if (service_->file_manager_->FileExists(FileManager::ResolvePath(mount_path, req_->file_path()).string())) {
                 Finish(grpc::Status(grpc::StatusCode::NOT_FOUND, "File not found"));
                 return;
             }
@@ -270,10 +274,11 @@ grpc::ServerWriteReactor<minidfs::FileBuffer>* MiniDFSImpl::FetchFile(
         const minidfs::FetchFileReq* req_;
         uint64_t offset_;
         minidfs::FileBuffer buffer_;
+        std::string mount_path_;
         const size_t CHUNK_SIZE = 64 * 1024;
     };
     
-    return new Reactor(this, request);
+    return new Reactor(this, mount_path_, request);
 }
 
 grpc::ServerWriteReactor<minidfs::FileUpdateRes>* MiniDFSImpl::FileUpdateCallback(
@@ -283,8 +288,8 @@ grpc::ServerWriteReactor<minidfs::FileUpdateRes>* MiniDFSImpl::FileUpdateCallbac
     class Reactor : public grpc::ServerWriteReactor<minidfs::FileUpdateRes>, public IPubSubReactor {
     public:
         Reactor(MiniDFSImpl* service, const std::string& client_id) {
+            service_ = service;
             client_id_ = client_id;
-            service_->pubsub_manager_->Subscribe(client_id_, this);
         }
 
         void NotifyUpdate(const std::string& file_path, minidfs::FileUpdateType type) override {
@@ -324,8 +329,12 @@ grpc::ServerWriteReactor<minidfs::FileUpdateRes>* MiniDFSImpl::FileUpdateCallbac
         }
 
         void OnDone() override {
-            service_->pubsub_manager_->Unsubscribe(client_id_, this);
+            this->service_->pubsub_manager_->Unsubscribe(client_id_, this);
             delete this;
+        }
+
+        void OnCancel() override {
+            Finish(grpc::Status::CANCELLED);
         }
 
     private:
@@ -335,5 +344,10 @@ grpc::ServerWriteReactor<minidfs::FileUpdateRes>* MiniDFSImpl::FileUpdateCallbac
         std::queue<minidfs::FileUpdateRes> queue_;
     };
 
-    return new Reactor(this, request->client_id());
+    auto* reactor = new Reactor(this, request->client_id());
+
+    this->pubsub_manager_->Subscribe(request->client_id(), reactor);
+
+    
+    return reactor;
 }

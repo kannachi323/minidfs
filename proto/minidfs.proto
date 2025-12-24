@@ -4,7 +4,7 @@ package minidfs;
 
 enum FileUpdateType {
     CREATED = 0;
-    UPDATED = 1;
+    MODIFIED = 1;
     DELETED = 2;
 }
 

@@ -1,2 +1,0 @@
-/usr/bin/ar qc libminidfs.a CMakeFiles/minidfs.dir/dfs/file_manager.cpp.o CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.o CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.o CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o
-/usr/bin/ranlib libminidfs.a

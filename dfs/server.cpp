@@ -15,17 +15,11 @@ int main(int argc, char** argv) {
     MiniDFSImpl service(mount_path);
 
     grpc::ServerBuilder builder;
-    // Listen on the given address without any authentication mechanism.
     builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
-    // Register "service" as the instance through which we'll communicate with clients.
     builder.RegisterService(&service);
 
-    // Finally assemble the server.
     std::unique_ptr<grpc::Server> server(builder.BuildAndStart());
-    std::cout << "MiniDFS Server listening on " << server_address << std::endl;
-    std::cout << "Mount path: " << mount_path << std::endl;
 
-    // Wait for the server to shutdown. 
     server->Wait();
 
     return 0;

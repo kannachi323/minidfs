@@ -529,27 +529,27 @@ const char descriptor_table_protodef_minidfs_2eproto[] ABSL_ATTRIBUTE_SECTION_VA
     "ss\030\001 \001(\010\"\"\n\rFileUpdateReq\022\021\n\tclient_id\030\001"
     " \001(\t\"m\n\rFileUpdateRes\022%\n\004type\030\001 \001(\0162\027.mi"
     "nidfs.FileUpdateType\022$\n\tfile_info\030\002 \001(\0132"
-    "\021.minidfs.FileInfo\022\017\n\007version\030\003 \001(\004*7\n\016F"
-    "ileUpdateType\022\013\n\007CREATED\020\000\022\013\n\007UPDATED\020\001\022"
-    "\013\n\007DELETED\020\0022\312\003\n\016MiniDFSService\0229\n\tStore"
-    "File\022\023.minidfs.FileBuffer\032\025.minidfs.Stor"
-    "eFileRes(\001\0229\n\tFetchFile\022\025.minidfs.FetchF"
-    "ileReq\032\023.minidfs.FileBuffer0\001\022B\n\014ListAll"
-    "Files\022\030.minidfs.ListAllFilesReq\032\030.minidf"
-    "s.ListAllFilesRes\022:\n\rGetFileStatus\022\026.min"
-    "idfs.FileStatusReq\032\021.minidfs.FileInfo\022<\n"
-    "\014GetWriteLock\022\025.minidfs.WriteLockReq\032\025.m"
-    "inidfs.WriteLockRes\022<\n\nDeleteFile\022\026.mini"
-    "dfs.DeleteFileReq\032\026.minidfs.DeleteFileRe"
-    "s\022F\n\022FileUpdateCallback\022\026.minidfs.FileUp"
-    "dateReq\032\026.minidfs.FileUpdateRes0\001b\006proto"
-    "3"
+    "\021.minidfs.FileInfo\022\017\n\007version\030\003 \001(\004*8\n\016F"
+    "ileUpdateType\022\013\n\007CREATED\020\000\022\014\n\010MODIFIED\020\001"
+    "\022\013\n\007DELETED\020\0022\312\003\n\016MiniDFSService\0229\n\tStor"
+    "eFile\022\023.minidfs.FileBuffer\032\025.minidfs.Sto"
+    "reFileRes(\001\0229\n\tFetchFile\022\025.minidfs.Fetch"
+    "FileReq\032\023.minidfs.FileBuffer0\001\022B\n\014ListAl"
+    "lFiles\022\030.minidfs.ListAllFilesReq\032\030.minid"
+    "fs.ListAllFilesRes\022:\n\rGetFileStatus\022\026.mi"
+    "nidfs.FileStatusReq\032\021.minidfs.FileInfo\022<"
+    "\n\014GetWriteLock\022\025.minidfs.WriteLockReq\032\025."
+    "minidfs.WriteLockRes\022<\n\nDeleteFile\022\026.min"
+    "idfs.DeleteFileReq\032\026.minidfs.DeleteFileR"
+    "es\022F\n\022FileUpdateCallback\022\026.minidfs.FileU"
+    "pdateReq\032\026.minidfs.FileUpdateRes0\001b\006prot"
+    "o3"
 };
 static ::absl::once_flag descriptor_table_minidfs_2eproto_once;
 PROTOBUF_CONSTINIT const ::_pbi::DescriptorTable descriptor_table_minidfs_2eproto = {
     false,
     false,
-    1201,
+    1202,
     descriptor_table_protodef_minidfs_2eproto,
     "minidfs.proto",
     &descriptor_table_minidfs_2eproto_once,
