@@ -1,13 +1,15 @@
-#include "minidfs_impl.h"
 
 #include <filesystem>
 #include <chrono>
+#include "minidfs_impl.h"
 
 namespace fs = std::filesystem;
 
 MiniDFSImpl::MiniDFSImpl(const std::string& mount_path) {
     file_manager_ = new FileManager(mount_path);
+    pubsub_manager_ = new PubSubManager();
     mount_path_ = mount_path;
+    version_ = 0;
 }
 
 MiniDFSImpl::~MiniDFSImpl() {
@@ -37,16 +39,7 @@ grpc::ServerUnaryReactor* MiniDFSImpl::GetFileStatus(
             }
 
             response_->set_file_path(request_->file_path());
-            response_->set_size(fs::file_size(full_path, ec));
-
-            auto ftime = fs::last_write_time(full_path, ec);
-            auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
-                ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now()
-            );
-            response_->set_last_modified(
-                std::chrono::duration_cast<std::chrono::seconds>(sctp.time_since_epoch()).count()
-            );
-
+            response_->set_hash(FileManager::GetFileHash(full_path.string()));
             Finish(grpc::Status::OK);
         }
 
@@ -84,21 +77,12 @@ grpc::ServerUnaryReactor* MiniDFSImpl::ListAllFiles(
                 auto file_info = res_->add_files();
                 fs::path rel = fs::relative(entry.path(), full_dir_path);
                 file_info->set_file_path(rel.string());
-                file_info->set_size(entry.file_size(ec));
-
-                auto ftime = entry.last_write_time(ec);
-                auto sctp = std::chrono::time_point_cast<std::chrono::system_clock::duration>(
-                    ftime - fs::file_time_type::clock::now() + std::chrono::system_clock::now()
-                );
-                file_info->set_last_modified(
-                    std::chrono::duration_cast<std::chrono::seconds>(sctp.time_since_epoch()).count()
-                );
+                file_info->set_hash(FileManager::GetFileHash(entry.path().string()));
             }
 
             Finish(grpc::Status::OK);
             
         }
-
         void OnDone() override {
             delete this;
         }
@@ -256,7 +240,7 @@ grpc::ServerWriteReactor<minidfs::FileBuffer>* MiniDFSImpl::FetchFile(
 
         void OnWriteDone(bool ok) override {
             if (!ok) {
-                Finish(grpc::Status::CANCELLED);
+                Finish(grpc::Status::OK);
                 return;
             }
             NextWrite();
@@ -290,4 +274,66 @@ grpc::ServerWriteReactor<minidfs::FileBuffer>* MiniDFSImpl::FetchFile(
     };
     
     return new Reactor(this, request);
+}
+
+grpc::ServerWriteReactor<minidfs::FileUpdateRes>* MiniDFSImpl::FileUpdateCallback(
+    grpc::CallbackServerContext* context, 
+    const minidfs::FileUpdateReq* request)
+{
+    class Reactor : public grpc::ServerWriteReactor<minidfs::FileUpdateRes>, public IPubSubReactor {
+    public:
+        Reactor(MiniDFSImpl* service, const std::string& client_id) {
+            client_id_ = client_id;
+            service_->pubsub_manager_->Subscribe(client_id_, this);
+        }
+
+        void NotifyUpdate(const std::string& file_path, minidfs::FileUpdateType type) override {
+            std::lock_guard<std::mutex> lock(mu_);  
+            
+            minidfs::FileInfo file_info;
+            file_info.set_file_path(file_path);
+            std::string full_path = service_->file_manager_->ResolvePath(service_->mount_path_, file_path).string();
+            file_info.set_hash(FileManager::GetFileHash(full_path));
+
+            minidfs::FileUpdateRes res;
+            res.set_type(type);
+            res.set_version(service_->LoadVersion());
+            res.mutable_file_info()->CopyFrom(file_info);
+
+            queue_.push(res);
+
+            if (queue_.size() == 1) {
+                StartWrite(&queue_.front());
+            }
+        }
+
+        void OnWriteDone(bool ok) override {
+            if (!ok) {
+                Finish(grpc::Status::OK);
+                return;
+            }
+            
+            {
+                std::lock_guard<std::mutex> lock(mu_);
+                queue_.pop();
+                if (!queue_.empty()) {
+                    StartWrite(&queue_.front());
+                }
+            }
+            
+        }
+
+        void OnDone() override {
+            service_->pubsub_manager_->Unsubscribe(client_id_, this);
+            delete this;
+        }
+
+    private:
+        std::string client_id_;
+        MiniDFSImpl* service_;
+        std::mutex mu_;
+        std::queue<minidfs::FileUpdateRes> queue_;
+    };
+
+    return new Reactor(this, request->client_id());
 }

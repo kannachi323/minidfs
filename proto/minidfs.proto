@@ -2,6 +2,12 @@ syntax = "proto3";
 
 package minidfs;
 
+enum FileUpdateType {
+    CREATED = 0;
+    UPDATED = 1;
+    DELETED = 2;
+}
+
 // service methods for minidfs
 service MiniDFSService {
 
@@ -24,6 +30,9 @@ service MiniDFSService {
 
     // Delete file request
     rpc DeleteFile(DeleteFileReq) returns (DeleteFileRes);
+
+    // Callback for file updates
+    rpc FileUpdateCallback(FileUpdateReq) returns (stream FileUpdateRes);
 
 }
 
@@ -55,9 +64,7 @@ message DeleteFileRes {
 
 message FileInfo {
     string file_path = 1;
-    uint64 size = 2;
-    uint64 last_modified = 3;
-    uint32 crc = 5;
+    string hash = 2;
 }
 
 message ListAllFilesReq {
@@ -79,4 +86,14 @@ message WriteLockReq {
 
 message WriteLockRes {
     bool success = 1;
+}
+
+message FileUpdateReq {
+    string client_id = 1;
+}
+
+message FileUpdateRes {
+    FileUpdateType type = 1;
+    FileInfo file_info = 2;
+    uint64 version = 3;
 }

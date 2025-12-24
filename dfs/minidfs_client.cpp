@@ -4,7 +4,41 @@
 MiniDFSClient::MiniDFSClient(std::shared_ptr<grpc::Channel> channel, const std::string& mount_path) {
     stub_ = minidfs::MiniDFSService::NewStub(channel);
     mount_path_ = "storage";
+    running_ = false;
 }
+
+MiniDFSClient::~MiniDFSClient() {
+    if (running_) {
+        running_ = false;
+        if (file_update_thread_.joinable()) {
+            file_update_thread_.join();
+        }
+    }
+}
+
+void MiniDFSClient::Sync(const std::string& client_id) {
+    running_.store(true);
+    file_update_thread_ = std::thread([this, client_id]() {
+        while (running_) {
+            grpc::StatusCode status = FileUpdateCallback(client_id);
+            if (status != grpc::StatusCode::OK) {
+                std::cerr << "FileUpdateCallback error: " << static_cast<int>(status) << std::endl;
+            }
+        }
+    });
+}
+
+grpc::StatusCode MiniDFSClient::ClientStatusCode(const grpc::Status& status) {
+    switch (status.error_code()) {
+        case grpc::StatusCode::OK:                  return grpc::StatusCode::OK;
+        case grpc::StatusCode::ABORTED:             return grpc::StatusCode::ABORTED;
+        case grpc::StatusCode::FAILED_PRECONDITION: return grpc::StatusCode::FAILED_PRECONDITION; // Added
+        case grpc::StatusCode::NOT_FOUND:           return grpc::StatusCode::NOT_FOUND;
+        case grpc::StatusCode::UNAVAILABLE:         return grpc::StatusCode::UNAVAILABLE; // Highly recommended
+        default:                                    return grpc::StatusCode::CANCELLED;
+    }
+}
+
 
 grpc::StatusCode MiniDFSClient::GetFileStatus(const std::string& path) {
     minidfs::FileStatusReq request;
@@ -14,13 +48,6 @@ grpc::StatusCode MiniDFSClient::GetFileStatus(const std::string& path) {
 
     grpc::Status status = stub_->GetFileStatus(&context, request, &response);
 
-    if (status.ok()) {
-        std::cout << "File: " << response.file_path() 
-                  << " Size: " << response.size() << " bytes\n";
-    } else {
-        std::cout << "RPC failed: " << status.error_code() 
-                  << ": " << status.error_message() << std::endl;
-    }
 
     return ClientStatusCode(status);
 }
@@ -42,8 +69,7 @@ grpc::StatusCode MiniDFSClient::ListAllFiles(const std::string& directory) {
     }
 
     for (const auto& file_info : response.files()) {
-        std::cout << "File: " << file_info.file_path()
-                  << " Size: " << file_info.size() << " bytes\n";
+        std::cout << "File: " << file_info.file_path() << std::endl;
     }
 
     return ClientStatusCode(status);
@@ -146,14 +172,21 @@ grpc::StatusCode MiniDFSClient::FetchFile(const std::string& file_path) {
     return ClientStatusCode(status);
 }
 
-grpc::StatusCode MiniDFSClient::ClientStatusCode(const grpc::Status& status) {
-    switch (status.error_code()) {
-        case grpc::StatusCode::OK:                  return grpc::StatusCode::OK;
-        case grpc::StatusCode::ABORTED:             return grpc::StatusCode::ABORTED;
-        case grpc::StatusCode::FAILED_PRECONDITION: return grpc::StatusCode::FAILED_PRECONDITION; // Added
-        case grpc::StatusCode::NOT_FOUND:           return grpc::StatusCode::NOT_FOUND;
-        case grpc::StatusCode::UNAVAILABLE:         return grpc::StatusCode::UNAVAILABLE; // Highly recommended
-        default:                                    return grpc::StatusCode::CANCELLED;
+grpc::StatusCode MiniDFSClient::FileUpdateCallback(const std::string& client_id) {
+    minidfs::FileUpdateReq request;
+    request.set_client_id(client_id);
+    grpc::ClientContext context;
+
+    auto reader = stub_->FileUpdateCallback(&context, request);
+
+    minidfs::FileUpdateRes res;
+    while (reader->Read(&res)) {
+        std::cout << "Received update for file: " << res.file_info().file_path()
+                  << " Type: " << res.type()
+                  << " Version: " << res.version() << std::endl;
     }
+    grpc::Status status = reader->Finish();
+    return ClientStatusCode(status);
 }
+
 

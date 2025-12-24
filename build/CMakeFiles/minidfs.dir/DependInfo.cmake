@@ -11,6 +11,7 @@ set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/Users/mtccool668/projects/minidfs/dfs/file_manager.cpp" "CMakeFiles/minidfs.dir/dfs/file_manager.cpp.o" "gcc" "CMakeFiles/minidfs.dir/dfs/file_manager.cpp.o.d"
   "/Users/mtccool668/projects/minidfs/dfs/minidfs_client.cpp" "CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.o" "gcc" "CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.o.d"
   "/Users/mtccool668/projects/minidfs/dfs/minidfs_impl.cpp" "CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.o" "gcc" "CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.o.d"
+  "/Users/mtccool668/projects/minidfs/dfs/pubsub_manager.cpp" "CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o" "gcc" "CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o.d"
   "/Users/mtccool668/projects/minidfs/proto_src/minidfs.grpc.pb.cc" "CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o" "gcc" "CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o.d"
   "/Users/mtccool668/projects/minidfs/proto_src/minidfs.pb.cc" "CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o" "gcc" "CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o.d"
   )

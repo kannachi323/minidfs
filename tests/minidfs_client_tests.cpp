@@ -6,20 +6,46 @@
 #include <chrono>
 #include <fstream>
 #include "dfs/minidfs_client.h"
+#include "dfs/minidfs_impl.h"
 
 class MiniDFSClientTest : public ::testing::Test {
 protected:
     static std::atomic<int> file_counter;
-    std::shared_ptr<grpc::Channel> shared_channel; // Define here for thread access
+    
+    // Server components
+    std::unique_ptr<MiniDFSImpl> server_impl;
+    std::unique_ptr<grpc::Server> server;
+    
+    // Client components
+    std::shared_ptr<grpc::Channel> shared_channel;
     std::unique_ptr<MiniDFSClient> client;
 
     void SetUp() override {
         std::string server_address = "localhost:50051";
+
+        server_impl = std::make_unique<MiniDFSImpl>("storage");
+
+        grpc::ServerBuilder builder;
+        builder.AddListeningPort(server_address, grpc::InsecureServerCredentials());
+        builder.RegisterService(server_impl.get());
+        server = builder.BuildAndStart();
+
+        // 3. Setup the Client
         shared_channel = grpc::CreateChannel(server_address, grpc::InsecureChannelCredentials());
         client = std::make_unique<MiniDFSClient>(shared_channel, "storage");
     }
 
-    // Returns a unique filename for this specific call
+    void TearDown() override {
+        server->Shutdown();
+        // server_impl and client are cleaned up by unique_ptr
+    }
+
+    // This now works perfectly because we can access the server_impl instance directly
+    void ResetState() {
+        server_impl->file_manager_->mu_.lock();
+        server_impl->file_manager_->write_locks_.clear();
+    }
+
     std::string GetTestFile() {
         return "test_file_" + std::to_string(file_counter.fetch_add(1)) + ".txt";
     }
@@ -89,5 +115,21 @@ TEST_F(MiniDFSClientTest, ReadAfterWrite) {
 
     // 1. Write the file
     ASSERT_EQ(client->StoreFile(client_id, filename, "asdfasdf"), grpc::StatusCode::OK);
-
 }
+
+TEST_F(MiniDFSClientTest, DeleteFile) {
+    std::string filename = GetTestFile();
+    std::string content = "To be deleted";
+
+    // 1. Write the file
+    ASSERT_EQ(client->StoreFile("client_deleter", filename, content), grpc::StatusCode::OK);
+
+    // 2. Delete the file
+    grpc::StatusCode del_status = client->DeleteFile(filename);
+    EXPECT_EQ(del_status, grpc::StatusCode::OK);
+
+    // 3. Attempt to fetch the deleted file
+    grpc::StatusCode fetch_status = client->FetchFile(filename);
+    EXPECT_EQ(fetch_status, grpc::StatusCode::NOT_FOUND);
+}
+

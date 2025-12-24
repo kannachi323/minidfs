@@ -29,6 +29,7 @@ static const char* MiniDFSService_method_names[] = {
   "/minidfs.MiniDFSService/GetFileStatus",
   "/minidfs.MiniDFSService/GetWriteLock",
   "/minidfs.MiniDFSService/DeleteFile",
+  "/minidfs.MiniDFSService/FileUpdateCallback",
 };
 
 std::unique_ptr< MiniDFSService::Stub> MiniDFSService::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
@@ -44,6 +45,7 @@ MiniDFSService::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& cha
   , rpcmethod_GetFileStatus_(MiniDFSService_method_names[3], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_GetWriteLock_(MiniDFSService_method_names[4], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   , rpcmethod_DeleteFile_(MiniDFSService_method_names[5], options.suffix_for_stats(),::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_FileUpdateCallback_(MiniDFSService_method_names[6], options.suffix_for_stats(),::grpc::internal::RpcMethod::SERVER_STREAMING, channel)
   {}
 
 ::grpc::ClientWriter< ::minidfs::FileBuffer>* MiniDFSService::Stub::StoreFileRaw(::grpc::ClientContext* context, ::minidfs::StoreFileRes* response) {
@@ -170,6 +172,22 @@ void MiniDFSService::Stub::async::DeleteFile(::grpc::ClientContext* context, con
   return result;
 }
 
+::grpc::ClientReader< ::minidfs::FileUpdateRes>* MiniDFSService::Stub::FileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request) {
+  return ::grpc::internal::ClientReaderFactory< ::minidfs::FileUpdateRes>::Create(channel_.get(), rpcmethod_FileUpdateCallback_, context, request);
+}
+
+void MiniDFSService::Stub::async::FileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq* request, ::grpc::ClientReadReactor< ::minidfs::FileUpdateRes>* reactor) {
+  ::grpc::internal::ClientCallbackReaderFactory< ::minidfs::FileUpdateRes>::Create(stub_->channel_.get(), stub_->rpcmethod_FileUpdateCallback_, context, request, reactor);
+}
+
+::grpc::ClientAsyncReader< ::minidfs::FileUpdateRes>* MiniDFSService::Stub::AsyncFileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq, void* tag) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::minidfs::FileUpdateRes>::Create(channel_.get(), cq, rpcmethod_FileUpdateCallback_, context, request, true, tag);
+}
+
+::grpc::ClientAsyncReader< ::minidfs::FileUpdateRes>* MiniDFSService::Stub::PrepareAsyncFileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc::internal::ClientAsyncReaderFactory< ::minidfs::FileUpdateRes>::Create(channel_.get(), cq, rpcmethod_FileUpdateCallback_, context, request, false, nullptr);
+}
+
 MiniDFSService::Service::Service() {
   AddMethod(new ::grpc::internal::RpcServiceMethod(
       MiniDFSService_method_names[0],
@@ -231,6 +249,16 @@ MiniDFSService::Service::Service() {
              ::minidfs::DeleteFileRes* resp) {
                return service->DeleteFile(ctx, req, resp);
              }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
+      MiniDFSService_method_names[6],
+      ::grpc::internal::RpcMethod::SERVER_STREAMING,
+      new ::grpc::internal::ServerStreamingHandler< MiniDFSService::Service, ::minidfs::FileUpdateReq, ::minidfs::FileUpdateRes>(
+          [](MiniDFSService::Service* service,
+             ::grpc::ServerContext* ctx,
+             const ::minidfs::FileUpdateReq* req,
+             ::grpc::ServerWriter<::minidfs::FileUpdateRes>* writer) {
+               return service->FileUpdateCallback(ctx, req, writer);
+             }, this)));
 }
 
 MiniDFSService::Service::~Service() {
@@ -275,6 +303,13 @@ MiniDFSService::Service::~Service() {
   (void) context;
   (void) request;
   (void) response;
+  return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+}
+
+::grpc::Status MiniDFSService::Service::FileUpdateCallback(::grpc::ServerContext* context, const ::minidfs::FileUpdateReq* request, ::grpc::ServerWriter< ::minidfs::FileUpdateRes>* writer) {
+  (void) context;
+  (void) request;
+  (void) writer;
   return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
 }
 

@@ -74,6 +74,34 @@ TEST(FileManagerTest, ReadAfterWrite) {
     EXPECT_TRUE(fm.ReadFile("file.txt", 0, 11, &buf));
     EXPECT_EQ(buf.data(), "hello world");
 }
+
+TEST(FileManagerTest, SameFileHasEqualHash) {
+    FileManager fm("/tmp/testfs");
+    std::string client = "client_1";
+    fm.AcquireWriteLock(client, "file.txt");
+
+    EXPECT_TRUE(fm.WriteFile(client, "file.txt", "hello world"));
+
+    std::string hash1 = fm.GetFileHash("file.txt");
+    std::string hash2 = fm.GetFileHash("file.txt");
+
+    EXPECT_EQ(hash1, hash2);
+}
+
+TEST(FileManagerTest, DifferentFileHasDifferentHash) {
+    FileManager fm("storage");
+    std::string client = "client_1";
+    fm.AcquireWriteLock(client, "file1.txt");
+    fm.AcquireWriteLock(client, "file2.txt");
+
+    EXPECT_TRUE(fm.WriteFile(client, "file1.txt", "hello world"));
+    EXPECT_TRUE(fm.WriteFile(client, "file2.txt", "goodbye world"));
+
+    std::string hash1 = fm.GetFileHash("storage/file1.txt");
+    std::string hash2 = fm.GetFileHash("storage/file2.txt");
+
+    EXPECT_NE(hash1, hash2);
+}
  
 
 

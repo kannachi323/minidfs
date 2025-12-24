@@ -7,7 +7,6 @@ endif()
 set(DEV_ROOT_PATH $ENV{DEV_ROOT})
 message(STATUS "DEV_ROOT_PATH = ${DEV_ROOT_PATH}")
 
-
 message(STATUS "Dependencies found at: ${DEV_ROOT_PATH}")
 
 set(EXTERNAL_INCLUDE_DIRS

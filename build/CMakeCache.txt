@@ -394,8 +394,14 @@ minidfs_BINARY_DIR:STATIC=/Users/mtccool668/projects/minidfs/build
 //Value Computed by CMake
 minidfs_IS_TOP_LEVEL:STATIC=ON
 
+//Dependencies for the target
+minidfs_LIB_DEPENDS:STATIC=general;OpenSSL::Crypto;
+
 //Value Computed by CMake
 minidfs_SOURCE_DIR:STATIC=/Users/mtccool668/projects/minidfs
+
+//The directory containing a CMake configuration file for openssl.
+openssl_DIR:PATH=/opt/homebrew/lib/cmake/OpenSSL
 
 //Path to a library.
 pkgcfg_lib__OPENSSL_crypto:FILEPATH=/opt/homebrew/Cellar/openssl@3/3.6.0/lib/libcrypto.dylib

@@ -371,6 +371,30 @@ dfs/minidfs_impl.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.s
 .PHONY : dfs/minidfs_impl.cpp.s
 
+dfs/pubsub_manager.o: dfs/pubsub_manager.cpp.o
+.PHONY : dfs/pubsub_manager.o
+
+# target to build an object file
+dfs/pubsub_manager.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o
+.PHONY : dfs/pubsub_manager.cpp.o
+
+dfs/pubsub_manager.i: dfs/pubsub_manager.cpp.i
+.PHONY : dfs/pubsub_manager.i
+
+# target to preprocess a source file
+dfs/pubsub_manager.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.i
+.PHONY : dfs/pubsub_manager.cpp.i
+
+dfs/pubsub_manager.s: dfs/pubsub_manager.cpp.s
+.PHONY : dfs/pubsub_manager.s
+
+# target to generate assembly for a file
+dfs/pubsub_manager.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.s
+.PHONY : dfs/pubsub_manager.cpp.s
+
 dfs/server.o: dfs/server.cpp.o
 .PHONY : dfs/server.o
 
@@ -676,6 +700,9 @@ help:
 	@echo "... dfs/minidfs_impl.o"
 	@echo "... dfs/minidfs_impl.i"
 	@echo "... dfs/minidfs_impl.s"
+	@echo "... dfs/pubsub_manager.o"
+	@echo "... dfs/pubsub_manager.i"
+	@echo "... dfs/pubsub_manager.s"
 	@echo "... dfs/server.o"
 	@echo "... dfs/server.i"
 	@echo "... dfs/server.s"

@@ -91,6 +91,16 @@ class MiniDFSService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::minidfs::DeleteFileRes>> PrepareAsyncDeleteFile(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReaderInterface< ::minidfs::DeleteFileRes>>(PrepareAsyncDeleteFileRaw(context, request, cq));
     }
+    // Callback for file updates
+    std::unique_ptr< ::grpc::ClientReaderInterface< ::minidfs::FileUpdateRes>> FileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request) {
+      return std::unique_ptr< ::grpc::ClientReaderInterface< ::minidfs::FileUpdateRes>>(FileUpdateCallbackRaw(context, request));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::minidfs::FileUpdateRes>> AsyncFileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::minidfs::FileUpdateRes>>(AsyncFileUpdateCallbackRaw(context, request, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::minidfs::FileUpdateRes>> PrepareAsyncFileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReaderInterface< ::minidfs::FileUpdateRes>>(PrepareAsyncFileUpdateCallbackRaw(context, request, cq));
+    }
     class async_interface {
      public:
       virtual ~async_interface() {}
@@ -112,6 +122,8 @@ class MiniDFSService final {
       // Delete file request
       virtual void DeleteFile(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq* request, ::minidfs::DeleteFileRes* response, std::function<void(::grpc::Status)>) = 0;
       virtual void DeleteFile(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq* request, ::minidfs::DeleteFileRes* response, ::grpc::ClientUnaryReactor* reactor) = 0;
+      // Callback for file updates
+      virtual void FileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq* request, ::grpc::ClientReadReactor< ::minidfs::FileUpdateRes>* reactor) = 0;
     };
     typedef class async_interface experimental_async_interface;
     virtual class async_interface* async() { return nullptr; }
@@ -131,6 +143,9 @@ class MiniDFSService final {
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::minidfs::WriteLockRes>* PrepareAsyncGetWriteLockRaw(::grpc::ClientContext* context, const ::minidfs::WriteLockReq& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::minidfs::DeleteFileRes>* AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq& request, ::grpc::CompletionQueue* cq) = 0;
     virtual ::grpc::ClientAsyncResponseReaderInterface< ::minidfs::DeleteFileRes>* PrepareAsyncDeleteFileRaw(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq& request, ::grpc::CompletionQueue* cq) = 0;
+    virtual ::grpc::ClientReaderInterface< ::minidfs::FileUpdateRes>* FileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::minidfs::FileUpdateRes>* AsyncFileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq, void* tag) = 0;
+    virtual ::grpc::ClientAsyncReaderInterface< ::minidfs::FileUpdateRes>* PrepareAsyncFileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq) = 0;
   };
   class Stub final : public StubInterface {
    public:
@@ -181,6 +196,15 @@ class MiniDFSService final {
     std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::minidfs::DeleteFileRes>> PrepareAsyncDeleteFile(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq& request, ::grpc::CompletionQueue* cq) {
       return std::unique_ptr< ::grpc::ClientAsyncResponseReader< ::minidfs::DeleteFileRes>>(PrepareAsyncDeleteFileRaw(context, request, cq));
     }
+    std::unique_ptr< ::grpc::ClientReader< ::minidfs::FileUpdateRes>> FileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request) {
+      return std::unique_ptr< ::grpc::ClientReader< ::minidfs::FileUpdateRes>>(FileUpdateCallbackRaw(context, request));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::minidfs::FileUpdateRes>> AsyncFileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq, void* tag) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::minidfs::FileUpdateRes>>(AsyncFileUpdateCallbackRaw(context, request, cq, tag));
+    }
+    std::unique_ptr< ::grpc::ClientAsyncReader< ::minidfs::FileUpdateRes>> PrepareAsyncFileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq) {
+      return std::unique_ptr< ::grpc::ClientAsyncReader< ::minidfs::FileUpdateRes>>(PrepareAsyncFileUpdateCallbackRaw(context, request, cq));
+    }
     class async final :
       public StubInterface::async_interface {
      public:
@@ -194,6 +218,7 @@ class MiniDFSService final {
       void GetWriteLock(::grpc::ClientContext* context, const ::minidfs::WriteLockReq* request, ::minidfs::WriteLockRes* response, ::grpc::ClientUnaryReactor* reactor) override;
       void DeleteFile(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq* request, ::minidfs::DeleteFileRes* response, std::function<void(::grpc::Status)>) override;
       void DeleteFile(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq* request, ::minidfs::DeleteFileRes* response, ::grpc::ClientUnaryReactor* reactor) override;
+      void FileUpdateCallback(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq* request, ::grpc::ClientReadReactor< ::minidfs::FileUpdateRes>* reactor) override;
      private:
       friend class Stub;
       explicit async(Stub* stub): stub_(stub) { }
@@ -219,12 +244,16 @@ class MiniDFSService final {
     ::grpc::ClientAsyncResponseReader< ::minidfs::WriteLockRes>* PrepareAsyncGetWriteLockRaw(::grpc::ClientContext* context, const ::minidfs::WriteLockReq& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::minidfs::DeleteFileRes>* AsyncDeleteFileRaw(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq& request, ::grpc::CompletionQueue* cq) override;
     ::grpc::ClientAsyncResponseReader< ::minidfs::DeleteFileRes>* PrepareAsyncDeleteFileRaw(::grpc::ClientContext* context, const ::minidfs::DeleteFileReq& request, ::grpc::CompletionQueue* cq) override;
+    ::grpc::ClientReader< ::minidfs::FileUpdateRes>* FileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request) override;
+    ::grpc::ClientAsyncReader< ::minidfs::FileUpdateRes>* AsyncFileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq, void* tag) override;
+    ::grpc::ClientAsyncReader< ::minidfs::FileUpdateRes>* PrepareAsyncFileUpdateCallbackRaw(::grpc::ClientContext* context, const ::minidfs::FileUpdateReq& request, ::grpc::CompletionQueue* cq) override;
     const ::grpc::internal::RpcMethod rpcmethod_StoreFile_;
     const ::grpc::internal::RpcMethod rpcmethod_FetchFile_;
     const ::grpc::internal::RpcMethod rpcmethod_ListAllFiles_;
     const ::grpc::internal::RpcMethod rpcmethod_GetFileStatus_;
     const ::grpc::internal::RpcMethod rpcmethod_GetWriteLock_;
     const ::grpc::internal::RpcMethod rpcmethod_DeleteFile_;
+    const ::grpc::internal::RpcMethod rpcmethod_FileUpdateCallback_;
   };
   static std::unique_ptr<Stub> NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options = ::grpc::StubOptions());
 
@@ -246,6 +275,8 @@ class MiniDFSService final {
     virtual ::grpc::Status GetWriteLock(::grpc::ServerContext* context, const ::minidfs::WriteLockReq* request, ::minidfs::WriteLockRes* response);
     // Delete file request
     virtual ::grpc::Status DeleteFile(::grpc::ServerContext* context, const ::minidfs::DeleteFileReq* request, ::minidfs::DeleteFileRes* response);
+    // Callback for file updates
+    virtual ::grpc::Status FileUpdateCallback(::grpc::ServerContext* context, const ::minidfs::FileUpdateReq* request, ::grpc::ServerWriter< ::minidfs::FileUpdateRes>* writer);
   };
   template <class BaseClass>
   class WithAsyncMethod_StoreFile : public BaseClass {
@@ -367,7 +398,27 @@ class MiniDFSService final {
       ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
     }
   };
-  typedef WithAsyncMethod_StoreFile<WithAsyncMethod_FetchFile<WithAsyncMethod_ListAllFiles<WithAsyncMethod_GetFileStatus<WithAsyncMethod_GetWriteLock<WithAsyncMethod_DeleteFile<Service > > > > > > AsyncService;
+  template <class BaseClass>
+  class WithAsyncMethod_FileUpdateCallback : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithAsyncMethod_FileUpdateCallback() {
+      ::grpc::Service::MarkMethodAsync(6);
+    }
+    ~WithAsyncMethod_FileUpdateCallback() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status FileUpdateCallback(::grpc::ServerContext* /*context*/, const ::minidfs::FileUpdateReq* /*request*/, ::grpc::ServerWriter< ::minidfs::FileUpdateRes>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestFileUpdateCallback(::grpc::ServerContext* context, ::minidfs::FileUpdateReq* request, ::grpc::ServerAsyncWriter< ::minidfs::FileUpdateRes>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncServerStreaming(6, context, request, writer, new_call_cq, notification_cq, tag);
+    }
+  };
+  typedef WithAsyncMethod_StoreFile<WithAsyncMethod_FetchFile<WithAsyncMethod_ListAllFiles<WithAsyncMethod_GetFileStatus<WithAsyncMethod_GetWriteLock<WithAsyncMethod_DeleteFile<WithAsyncMethod_FileUpdateCallback<Service > > > > > > > AsyncService;
   template <class BaseClass>
   class WithCallbackMethod_StoreFile : public BaseClass {
    private:
@@ -520,7 +571,29 @@ class MiniDFSService final {
     virtual ::grpc::ServerUnaryReactor* DeleteFile(
       ::grpc::CallbackServerContext* /*context*/, const ::minidfs::DeleteFileReq* /*request*/, ::minidfs::DeleteFileRes* /*response*/)  { return nullptr; }
   };
-  typedef WithCallbackMethod_StoreFile<WithCallbackMethod_FetchFile<WithCallbackMethod_ListAllFiles<WithCallbackMethod_GetFileStatus<WithCallbackMethod_GetWriteLock<WithCallbackMethod_DeleteFile<Service > > > > > > CallbackService;
+  template <class BaseClass>
+  class WithCallbackMethod_FileUpdateCallback : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithCallbackMethod_FileUpdateCallback() {
+      ::grpc::Service::MarkMethodCallback(6,
+          new ::grpc::internal::CallbackServerStreamingHandler< ::minidfs::FileUpdateReq, ::minidfs::FileUpdateRes>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const ::minidfs::FileUpdateReq* request) { return this->FileUpdateCallback(context, request); }));
+    }
+    ~WithCallbackMethod_FileUpdateCallback() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status FileUpdateCallback(::grpc::ServerContext* /*context*/, const ::minidfs::FileUpdateReq* /*request*/, ::grpc::ServerWriter< ::minidfs::FileUpdateRes>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerWriteReactor< ::minidfs::FileUpdateRes>* FileUpdateCallback(
+      ::grpc::CallbackServerContext* /*context*/, const ::minidfs::FileUpdateReq* /*request*/)  { return nullptr; }
+  };
+  typedef WithCallbackMethod_StoreFile<WithCallbackMethod_FetchFile<WithCallbackMethod_ListAllFiles<WithCallbackMethod_GetFileStatus<WithCallbackMethod_GetWriteLock<WithCallbackMethod_DeleteFile<WithCallbackMethod_FileUpdateCallback<Service > > > > > > > CallbackService;
   typedef CallbackService ExperimentalCallbackService;
   template <class BaseClass>
   class WithGenericMethod_StoreFile : public BaseClass {
@@ -620,6 +693,23 @@ class MiniDFSService final {
     }
     // disable synchronous version of this method
     ::grpc::Status DeleteFile(::grpc::ServerContext* /*context*/, const ::minidfs::DeleteFileReq* /*request*/, ::minidfs::DeleteFileRes* /*response*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+  };
+  template <class BaseClass>
+  class WithGenericMethod_FileUpdateCallback : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithGenericMethod_FileUpdateCallback() {
+      ::grpc::Service::MarkMethodGeneric(6);
+    }
+    ~WithGenericMethod_FileUpdateCallback() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status FileUpdateCallback(::grpc::ServerContext* /*context*/, const ::minidfs::FileUpdateReq* /*request*/, ::grpc::ServerWriter< ::minidfs::FileUpdateRes>* /*writer*/) override {
       abort();
       return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
     }
@@ -742,6 +832,26 @@ class MiniDFSService final {
     }
     void RequestDeleteFile(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncResponseWriter< ::grpc::ByteBuffer>* response, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
       ::grpc::Service::RequestAsyncUnary(5, context, request, response, new_call_cq, notification_cq, tag);
+    }
+  };
+  template <class BaseClass>
+  class WithRawMethod_FileUpdateCallback : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawMethod_FileUpdateCallback() {
+      ::grpc::Service::MarkMethodRaw(6);
+    }
+    ~WithRawMethod_FileUpdateCallback() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status FileUpdateCallback(::grpc::ServerContext* /*context*/, const ::minidfs::FileUpdateReq* /*request*/, ::grpc::ServerWriter< ::minidfs::FileUpdateRes>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    void RequestFileUpdateCallback(::grpc::ServerContext* context, ::grpc::ByteBuffer* request, ::grpc::ServerAsyncWriter< ::grpc::ByteBuffer>* writer, ::grpc::CompletionQueue* new_call_cq, ::grpc::ServerCompletionQueue* notification_cq, void *tag) {
+      ::grpc::Service::RequestAsyncServerStreaming(6, context, request, writer, new_call_cq, notification_cq, tag);
     }
   };
   template <class BaseClass>
@@ -875,6 +985,28 @@ class MiniDFSService final {
     }
     virtual ::grpc::ServerUnaryReactor* DeleteFile(
       ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/, ::grpc::ByteBuffer* /*response*/)  { return nullptr; }
+  };
+  template <class BaseClass>
+  class WithRawCallbackMethod_FileUpdateCallback : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithRawCallbackMethod_FileUpdateCallback() {
+      ::grpc::Service::MarkMethodRawCallback(6,
+          new ::grpc::internal::CallbackServerStreamingHandler< ::grpc::ByteBuffer, ::grpc::ByteBuffer>(
+            [this](
+                   ::grpc::CallbackServerContext* context, const::grpc::ByteBuffer* request) { return this->FileUpdateCallback(context, request); }));
+    }
+    ~WithRawCallbackMethod_FileUpdateCallback() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable synchronous version of this method
+    ::grpc::Status FileUpdateCallback(::grpc::ServerContext* /*context*/, const ::minidfs::FileUpdateReq* /*request*/, ::grpc::ServerWriter< ::minidfs::FileUpdateRes>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    virtual ::grpc::ServerWriteReactor< ::grpc::ByteBuffer>* FileUpdateCallback(
+      ::grpc::CallbackServerContext* /*context*/, const ::grpc::ByteBuffer* /*request*/)  { return nullptr; }
   };
   template <class BaseClass>
   class WithStreamedUnaryMethod_ListAllFiles : public BaseClass {
@@ -1012,8 +1144,35 @@ class MiniDFSService final {
     // replace default version of method with split streamed
     virtual ::grpc::Status StreamedFetchFile(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::minidfs::FetchFileReq,::minidfs::FileBuffer>* server_split_streamer) = 0;
   };
-  typedef WithSplitStreamingMethod_FetchFile<Service > SplitStreamedService;
-  typedef WithSplitStreamingMethod_FetchFile<WithStreamedUnaryMethod_ListAllFiles<WithStreamedUnaryMethod_GetFileStatus<WithStreamedUnaryMethod_GetWriteLock<WithStreamedUnaryMethod_DeleteFile<Service > > > > > StreamedService;
+  template <class BaseClass>
+  class WithSplitStreamingMethod_FileUpdateCallback : public BaseClass {
+   private:
+    void BaseClassMustBeDerivedFromService(const Service* /*service*/) {}
+   public:
+    WithSplitStreamingMethod_FileUpdateCallback() {
+      ::grpc::Service::MarkMethodStreamed(6,
+        new ::grpc::internal::SplitServerStreamingHandler<
+          ::minidfs::FileUpdateReq, ::minidfs::FileUpdateRes>(
+            [this](::grpc::ServerContext* context,
+                   ::grpc::ServerSplitStreamer<
+                     ::minidfs::FileUpdateReq, ::minidfs::FileUpdateRes>* streamer) {
+                       return this->StreamedFileUpdateCallback(context,
+                         streamer);
+                  }));
+    }
+    ~WithSplitStreamingMethod_FileUpdateCallback() override {
+      BaseClassMustBeDerivedFromService(this);
+    }
+    // disable regular version of this method
+    ::grpc::Status FileUpdateCallback(::grpc::ServerContext* /*context*/, const ::minidfs::FileUpdateReq* /*request*/, ::grpc::ServerWriter< ::minidfs::FileUpdateRes>* /*writer*/) override {
+      abort();
+      return ::grpc::Status(::grpc::StatusCode::UNIMPLEMENTED, "");
+    }
+    // replace default version of method with split streamed
+    virtual ::grpc::Status StreamedFileUpdateCallback(::grpc::ServerContext* context, ::grpc::ServerSplitStreamer< ::minidfs::FileUpdateReq,::minidfs::FileUpdateRes>* server_split_streamer) = 0;
+  };
+  typedef WithSplitStreamingMethod_FetchFile<WithSplitStreamingMethod_FileUpdateCallback<Service > > SplitStreamedService;
+  typedef WithSplitStreamingMethod_FetchFile<WithStreamedUnaryMethod_ListAllFiles<WithStreamedUnaryMethod_GetFileStatus<WithStreamedUnaryMethod_GetWriteLock<WithStreamedUnaryMethod_DeleteFile<WithSplitStreamingMethod_FileUpdateCallback<Service > > > > > > StreamedService;
 };
 
 }  // namespace minidfs

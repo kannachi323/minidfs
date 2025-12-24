@@ -4,9 +4,9 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/Users/mtccool668/projects/minidfs -I/Users/mtccool668/projects/minidfs/gui/imgui -I/Users/mtccool668/projects/minidfs/gui/imgui/backends -I/Users/mtccool668/projects/minidfs/proto_src -I/opt/homebrew/include -I/Users/mtccool668/development/glfw/include
+CXX_INCLUDES = -I/Users/mtccool668/projects/minidfs -I/Users/mtccool668/projects/minidfs/gui/imgui -I/Users/mtccool668/projects/minidfs/gui/imgui/backends -I/Users/mtccool668/projects/minidfs/proto_src -I/Users/mtccool668/development/glfw/include -isystem /opt/homebrew/include
 
-CXX_FLAGSarm64 = -std=gnu++17 -arch arm64
+CXX_FLAGSarm64 = -std=gnu++20 -arch arm64
 
-CXX_FLAGS = -std=gnu++17 -arch arm64
+CXX_FLAGS = -std=gnu++20 -arch arm64
 

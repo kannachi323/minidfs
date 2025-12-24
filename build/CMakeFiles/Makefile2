@@ -161,12 +161,12 @@ gtest/googletest/clean: gtest/googletest/CMakeFiles/gtest_main.dir/clean
 CMakeFiles/minidfs.dir/all:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=12,13,14,15,16,17 "Built target minidfs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=12,13,14,15,16,17,18 "Built target minidfs"
 .PHONY : CMakeFiles/minidfs.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/minidfs.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 6
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 7
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/minidfs.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
 .PHONY : CMakeFiles/minidfs.dir/rule
@@ -178,7 +178,7 @@ minidfs: CMakeFiles/minidfs.dir/rule
 # codegen rule for target.
 CMakeFiles/minidfs.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs.dir/build.make CMakeFiles/minidfs.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=12,13,14,15,16,17 "Finished codegen for target minidfs"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=12,13,14,15,16,17,18 "Finished codegen for target minidfs"
 .PHONY : CMakeFiles/minidfs.dir/codegen
 
 # clean rule for target.
@@ -193,12 +193,12 @@ CMakeFiles/minidfs.dir/clean:
 CMakeFiles/minidfs_server.dir/all: CMakeFiles/minidfs.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=20,21,22,23,24,25,26,27,28 "Built target minidfs_server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=21,22,23,24,25,26,27,28,29 "Built target minidfs_server"
 .PHONY : CMakeFiles/minidfs_server.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/minidfs_server.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 15
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 16
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/minidfs_server.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
 .PHONY : CMakeFiles/minidfs_server.dir/rule
@@ -210,7 +210,7 @@ minidfs_server: CMakeFiles/minidfs_server.dir/rule
 # codegen rule for target.
 CMakeFiles/minidfs_server.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_server.dir/build.make CMakeFiles/minidfs_server.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=20,21,22,23,24,25,26,27,28 "Finished codegen for target minidfs_server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=21,22,23,24,25,26,27,28,29 "Finished codegen for target minidfs_server"
 .PHONY : CMakeFiles/minidfs_server.dir/codegen
 
 # clean rule for target.
@@ -225,12 +225,12 @@ CMakeFiles/minidfs_server.dir/clean:
 CMakeFiles/minidfs_client.dir/all: CMakeFiles/minidfs.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=18,19 "Built target minidfs_client"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=19,20 "Built target minidfs_client"
 .PHONY : CMakeFiles/minidfs_client.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/minidfs_client.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 8
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 9
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/minidfs_client.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
 .PHONY : CMakeFiles/minidfs_client.dir/rule
@@ -242,7 +242,7 @@ minidfs_client: CMakeFiles/minidfs_client.dir/rule
 # codegen rule for target.
 CMakeFiles/minidfs_client.dir/codegen:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/minidfs_client.dir/build.make CMakeFiles/minidfs_client.dir/codegen
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=18,19 "Finished codegen for target minidfs_client"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=19,20 "Finished codegen for target minidfs_client"
 .PHONY : CMakeFiles/minidfs_client.dir/codegen
 
 # clean rule for target.
@@ -264,7 +264,7 @@ CMakeFiles/dfs_tests.dir/all: gtest/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/dfs_tests.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 13
+	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 14
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/dfs_tests.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /Users/mtccool668/projects/minidfs/build/CMakeFiles 0
 .PHONY : CMakeFiles/dfs_tests.dir/rule

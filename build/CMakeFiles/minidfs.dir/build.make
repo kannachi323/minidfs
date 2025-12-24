@@ -114,10 +114,24 @@ CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mtccool668/projects/minidfs/dfs/minidfs_client.cpp -o CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.s
 
+CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o: CMakeFiles/minidfs.dir/flags.make
+CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o: /Users/mtccool668/projects/minidfs/dfs/pubsub_manager.cpp
+CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o: CMakeFiles/minidfs.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o -MF CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o.d -o CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o -c /Users/mtccool668/projects/minidfs/dfs/pubsub_manager.cpp
+
+CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Preprocessing CXX source to CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /Users/mtccool668/projects/minidfs/dfs/pubsub_manager.cpp > CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.i
+
+CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green "Compiling CXX source to assembly CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /Users/mtccool668/projects/minidfs/dfs/pubsub_manager.cpp -o CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.s
+
 CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o: CMakeFiles/minidfs.dir/flags.make
 CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o: /Users/mtccool668/projects/minidfs/proto_src/minidfs.grpc.pb.cc
 CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o: CMakeFiles/minidfs.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o -MF CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o.d -o CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o -c /Users/mtccool668/projects/minidfs/proto_src/minidfs.grpc.pb.cc
 
 CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.i: cmake_force
@@ -131,7 +145,7 @@ CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.s: cmake_force
 CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o: CMakeFiles/minidfs.dir/flags.make
 CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o: /Users/mtccool668/projects/minidfs/proto_src/minidfs.pb.cc
 CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o: CMakeFiles/minidfs.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o -MF CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o.d -o CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o -c /Users/mtccool668/projects/minidfs/proto_src/minidfs.pb.cc
 
 CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.i: cmake_force
@@ -147,6 +161,7 @@ minidfs_OBJECTS = \
 "CMakeFiles/minidfs.dir/dfs/file_manager.cpp.o" \
 "CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.o" \
 "CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.o" \
+"CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o" \
 "CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o" \
 "CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o"
 
@@ -156,11 +171,12 @@ minidfs_EXTERNAL_OBJECTS =
 libminidfs.a: CMakeFiles/minidfs.dir/dfs/file_manager.cpp.o
 libminidfs.a: CMakeFiles/minidfs.dir/dfs/minidfs_impl.cpp.o
 libminidfs.a: CMakeFiles/minidfs.dir/dfs/minidfs_client.cpp.o
+libminidfs.a: CMakeFiles/minidfs.dir/dfs/pubsub_manager.cpp.o
 libminidfs.a: CMakeFiles/minidfs.dir/proto_src/minidfs.grpc.pb.cc.o
 libminidfs.a: CMakeFiles/minidfs.dir/proto_src/minidfs.pb.cc.o
 libminidfs.a: CMakeFiles/minidfs.dir/build.make
 libminidfs.a: CMakeFiles/minidfs.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Linking CXX static library libminidfs.a"
+	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --green --bold --progress-dir=/Users/mtccool668/projects/minidfs/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library libminidfs.a"
 	$(CMAKE_COMMAND) -P CMakeFiles/minidfs.dir/cmake_clean_target.cmake
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/minidfs.dir/link.txt --verbose=$(VERBOSE)
 

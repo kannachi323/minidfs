@@ -25,6 +25,8 @@ set(CMAKE_MAKEFILE_DEPENDS
   "/Users/mtccool668/projects/minidfs/cmake/setup_imgui.cmake"
   "/Users/mtccool668/projects/minidfs/cmake/setup_proto.cmake"
   "/Users/mtccool668/projects/minidfs/cmake/setup_tests.cmake"
+  "/opt/homebrew/lib/cmake/OpenSSL/OpenSSLConfig.cmake"
+  "/opt/homebrew/lib/cmake/OpenSSL/opensslConfigVersion.cmake"
   "/opt/homebrew/lib/cmake/absl/abslConfig.cmake"
   "/opt/homebrew/lib/cmake/absl/abslConfigVersion.cmake"
   "/opt/homebrew/lib/cmake/absl/abslTargets-release.cmake"

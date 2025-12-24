@@ -3,9 +3,14 @@
 #include <string>
 
 #include <grpcpp/grpcpp.h>
-#include "minidfs_impl.h" // Ensure this includes your MiniDFSImpl declaration
+#include "minidfs_impl.h"
 
-void RunServer(const std::string& mount_path) {
+int main(int argc, char** argv) {
+    std::string mount_path = "./storage";
+    if (argc > 1) {
+        mount_path = argv[1];
+    }
+
     std::string server_address("0.0.0.0:50051");
     MiniDFSImpl service(mount_path);
 
@@ -22,14 +27,6 @@ void RunServer(const std::string& mount_path) {
 
     // Wait for the server to shutdown. 
     server->Wait();
-}
 
-int main(int argc, char** argv) {
-    std::string mount_path = "./storage"; // Default storage path
-    if (argc > 1) {
-        mount_path = argv[1];
-    }
-
-    RunServer(mount_path);
     return 0;
 }
