@@ -4,10 +4,13 @@
 #include <memory>
 #include <thread>
 #include <atomic>
+#include <filesystem>
 #include <unordered_map>
 #include <grpcpp/grpcpp.h>
 #include "minidfs.grpc.pb.h"
 #include "file_manager.h"
+
+namespace fs = std::filesystem;
 
 struct ClientFileSession {
     std::atomic<int> refs;

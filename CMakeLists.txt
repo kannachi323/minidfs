@@ -7,27 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-# miniDFS static library
-set(MINIDFS_SRCS
-    "dfs/file_manager.cpp" 
-    "dfs/minidfs_impl.cpp"
-    "dfs/minidfs_client.cpp"
-    "dfs/pubsub_manager.cpp"
-)
-
-add_library(minidfs STATIC ${MINIDFS_SRCS})
-target_link_libraries(minidfs PUBLIC minidfs_proto)
-target_include_directories(minidfs PUBLIC
-    ${CMAKE_SOURCE_DIR}
-    ${IMGUI_INCLUDE_DIRS}
-    ${EXTERNAL_INCLUDE_DIRS}
-)
-
-
-# minidfs server cli/backend
-add_executable(minidfs_server "server.cpp")
-target_link_libraries(minidfs_server PRIVATE minidfs)
-
 include(setup_proto)
-include(setup_application)
+include(setup_libminidfs)
+include(setup_server)
 include(setup_tests)
+include(setup_application)

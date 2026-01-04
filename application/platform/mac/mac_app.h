@@ -6,7 +6,7 @@
 
 class MacApp : public Application {
 public:
-    int init() override;
+    void init_platform() override;
     void prepare_frame() override;
     void render_frame() override;
     bool is_running() override;
