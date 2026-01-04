@@ -47,7 +47,7 @@ void show_file_explorer() {
     // --- 1. BREADCRUMBS ---
     // We split the path into parts to make them clickable
     std::vector<fs::path> components;
-    for (auto& p : currentPath) components.push_back(p);
+    for (const auto& p : currentPath) components.push_back(p);
 
     fs::path accumulatePath;
     for (size_t i = 0; i < components.size(); i++) {

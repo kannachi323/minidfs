@@ -1,40 +1,26 @@
 #pragma once
-
+#include "application.h"
 #include "imgui.h"
-#include "imgui_impl_glfw.h"
-#include "imgui_impl_metal.h"
-#include <stdio.h>
-
-#define GLFW_INCLUDE_NONE
-#define GLFW_EXPOSE_NATIVE_COCOA
 #include <GLFW/glfw3.h>
-#include <GLFW/glfw3native.h>
-
-#include <stdexcept>
 
 
-class MacApplication {
+class MacApp : public Application {
 public:
-    MacApplication();
-    ~MacApplication();
-    
-
+    int init() override;
+    void prepare_frame() override;
+    void render_frame() override;
+    bool is_running() override;
+    void cleanup() override;
 
 private:
-    int init();                  // initialize GLFW, ImGui, Metal
-    void update(float dt);       // application logic
-    void render();               // rendering + ImGui
-    void draw_gui();            // ImGui widgets
+    GLFWwindow* window_ = nullptr;
 
-    GLFWwindow* window_;
-    id<MTLDevice> device_;
-    id<MTLCommandQueue> commandQueue_;
-    CAMetalLayer* layer_;
-    MTLRenderPassDescriptor* renderPassDescriptor_;
+    ImVec4 clear_color_ = ImVec4(0.45f, 0.55f, 0.60f, 1.0f);
 
-    bool show_demo_window_ = true;
-    bool show_another_window_ = false;
-    float clear_color_[4] = {0.45f, 0.55f, 0.60f, 1.0f};
-
-    float counter_ = 0.0f;        // example of logic state
+#ifdef __APPLE__
+    id<MTLDevice> device_ = nil;
+    id<MTLCommandQueue> command_queue_ = nil;
+    CAMetalLayer* metal_layer_ = nil;
+    MTLRenderPassDescriptor* render_pass_desc_ = nil;
+#endif
 };

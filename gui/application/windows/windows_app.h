@@ -1,6 +1,10 @@
 #pragma once
+
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+#ifdef _WIN32
+#include <glad/glad.h>
+#endif
 #include "application.h"
 
 class WindowsApp : public Application {

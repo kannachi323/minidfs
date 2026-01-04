@@ -42,13 +42,12 @@ else()
     )
 endif()
 
-
-file(GLOB_RECURSE APP_SRCS
+file(GLOB APP_SRCS
     "gui/application/*.cpp" 
     "gui/application/*.h" 
 )
 add_executable(minidfs_client)
-if(WIN32)
+if(WIN32 OR (UNIX AND NOT APPLE))
     list(APPEND APP_SRCS "gui/glad/src/glad.c")
     file(GLOB WIN32_SRCS "gui/application/windows/*.cpp" "gui/application/windows/*.h")
     list(APPEND APP_SRCS ${WIN32_SRCS})
@@ -56,11 +55,20 @@ if(WIN32)
     set_target_properties(minidfs_client PROPERTIES
         WIN32_EXECUTABLE TRUE
     )
+elseif(APPLE)
+    file(GLOB MAC_SRCS "gui/application/mac/*.mm" "gui/application/mac/*.h")
+    list(APPEND APP_SRCS ${MAC_SRCS})
+    target_sources(minidfs_client PRIVATE ${APP_SRCS})
+    set_target_properties(minidfs_client PROPERTIES
+        MACOSX_BUNDLE TRUE
+    )
 endif()
 target_include_directories(minidfs_client PRIVATE
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/gui
     ${CMAKE_SOURCE_DIR}/gui/application
+    ${CMAKE_SOURCE_DIR}/gui/application/mac
+    ${CMAKE_SOURCE_DIR}/gui/application/windows
     ${CMAKE_SOURCE_DIR}/gui/glad/include
     ${IMGUI_INCLUDE_DIRS}
 )
