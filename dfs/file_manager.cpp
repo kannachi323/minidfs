@@ -159,7 +159,34 @@ FileStatus FileManager::RemoveFile(const std::string& client_id, const std::stri
 }
 
 fs::path FileManager::ResolvePath(const std::string& mount_path, const std::string& file_path) {
-    return fs::path(mount_path) / file_path;
+    fs::path mount = fs::absolute(mount_path).lexically_normal();
+    fs::path full = (mount / fs::path(file_path).relative_path()).lexically_normal();
+
+    auto mount_str = mount.generic_string();
+    auto full_str = full.generic_string();
+
+    if (full_str.find(mount_str) != 0) {
+        throw std::runtime_error("Directory traversal attack detected!");
+    }
+
+    return full;
+}
+
+fs::path FileManager::VirtualPath(const std::string& mount_path, const std::string& file_path) {
+    fs::path mount = fs::absolute(mount_path).lexically_normal();
+    fs::path full = fs::absolute(file_path).lexically_normal();
+
+    if (full == mount) {
+        return "";
+    }
+
+    auto rel = fs::relative(full, mount);
+
+    if (rel.empty() || rel.string().find("..") == 0) {
+        throw std::runtime_error("File is outside of mount path!");
+    }
+
+    return rel;
 }
 
 std::string FileManager::GetFileHash(const std::string& file_path) {

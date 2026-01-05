@@ -2,8 +2,6 @@
 #include <iostream>
 #include <fstream>
 
-
-
 MiniDFSClient::MiniDFSClient(std::shared_ptr<grpc::Channel> channel, const std::string& mount_path) {
     stub_ = minidfs::MiniDFSService::NewStub(channel);
     mount_path_ = mount_path;

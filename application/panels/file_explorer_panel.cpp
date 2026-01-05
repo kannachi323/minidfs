@@ -10,6 +10,7 @@ namespace minidfs {
     void FileExplorerPanel::render() {
         auto& state = registry_.get_state<FileExplorerState>("FileExplorer");
 
+
         ImGui::Begin("File Explorer");
         
         show_search_bar();
@@ -18,6 +19,27 @@ namespace minidfs {
         ImGui::Separator();
            
 		show_directory_contents();
+
+        if (!state.error_msg.empty()) {
+            ImGui::OpenPopup("Error Alert");
+        }
+
+        // Always define the popup window layout
+        if (ImGui::BeginPopupModal("Error Alert", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+            ImGui::TextColored(ImVec4(1.0f, 0.4f, 0.4f, 1.0f), "SYSTEM ERROR");
+            ImGui::Separator();
+            ImGui::TextWrapped("%s", state.error_msg.c_str());
+            ImGui::Spacing();
+
+            if (ImGui::Button("OK", ImVec2(120, 0))) {
+                // This is crucial: Clear the error message so it doesn't reopen immediately
+                registry_.update_state<FileExplorerState>("FileExplorer", [](FileExplorerState& s) {
+                    s.error_msg = "";
+                    });
+                ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
 
         ImGui::End();
     }
@@ -95,7 +117,6 @@ namespace minidfs {
                     // 2. Double click check: Use ImGui::IsItemHovered() + DoubleClicked
                     // This is more reliable inside a Selectable loop
                     if (ImGui::IsMouseDoubleClicked(0) && file.is_dir()) {
-                        std::cout << "Navigating to: " << full_path << std::endl;
                         get_files(full_path);
                     }
                     ImGui::TableNextColumn();
@@ -106,17 +127,17 @@ namespace minidfs {
         }
     }
 
-    void FileExplorerPanel::get_files(const std::string& path_query) { // Rename parameter to avoid shadowing
+    void FileExplorerPanel::get_files(const std::string& path_query) {
         auto& state = registry_.get_state<FileExplorerState>("FileExplorer");
 
-        if (client_ == nullptr) return;
+        if (client_ == nullptr) return; //TODO handle error
+        
 
         state.is_loading = true;
         auto client_ptr = client_;
         auto results = std::make_shared<std::vector<minidfs::FileInfo>>();
 
         worker_pool_.add(
-            // 1. BACKGROUND THREAD
             [client_ptr, path_query, results]() {
                 minidfs::ListFilesRes response;
                 // Use the path_query passed from the UI
@@ -130,19 +151,16 @@ namespace minidfs {
                 }
                 throw std::runtime_error("gRPC fetch failed");
             },
-            // 2. SUCCESS (Main Thread)
             [this, results, path_query]() {
-                // Inner lambda needs 'mutable' to move *results
                 registry_.update_state<FileExplorerState>("FileExplorer", [path_query, results](FileExplorerState& s) mutable {
                     std::cout << "UI Updating for path: " << path_query << std::endl;
                     s.update_files(path_query, std::move(*results));
                 });
             },
-            // 3. ERROR (Main Thread)
-            [this]() {
-                registry_.update_state<FileExplorerState>("FileExplorer", [](FileExplorerState& s) {
+            [this, results]() {
+                registry_.update_state<FileExplorerState>("FileExplorer", [results](FileExplorerState& s) {
                     s.is_loading = false;
-                    s.error_msg = "Error: Unable to fetch files";
+                    s.error_msg = "Error: Unable to fetch files at this path";
                 });
             }
         );

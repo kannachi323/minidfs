@@ -20,6 +20,7 @@ struct ClientFileSession {
 
 class MiniDFSClient {
 public:
+
     explicit MiniDFSClient(std::shared_ptr<grpc::Channel> channel, const std::string& mount_path);
     ~MiniDFSClient();
 
@@ -36,7 +37,7 @@ public:
 
     void BeginSync(const std::string& client_id);
     void EndSync();
-
+    
 private:
     std::shared_ptr<ClientFileSession> AcquireClientFileSession(const std::string& file_path);
     void ReleaseClientFileSession(const std::string& file_path);

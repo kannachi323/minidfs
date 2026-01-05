@@ -9,7 +9,7 @@
 namespace fs = std::filesystem;
 
 int main(int argc, char** argv) {
-    std::string mount_path = "./storage";
+    std::string mount_path = "minidfs";
     if (argc > 1) {
         mount_path = argv[1];
     }

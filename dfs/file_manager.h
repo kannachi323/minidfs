@@ -58,6 +58,8 @@ public:
 
     static std::string GetFileHash(const std::string& file_path);
 
+    static std::filesystem::path VirtualPath(const std::string& mount_path, const std::string& file_path);
+
 private:
     void ReleaseAllLocks();
         

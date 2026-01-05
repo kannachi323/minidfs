@@ -22,8 +22,10 @@ grpc::ServerUnaryReactor* MiniDFSImpl::ListFiles(
         Reactor(MiniDFSImpl* service, const minidfs::ListFilesReq* req, minidfs::ListFilesRes* res) 
             : service_(service)
         {
-			std::cout << service_->mount_path_ << " " << req->path() << std::endl;
-            fs::path dir_path = FileManager::ResolvePath(service_->mount_path_, req->path());
+            fs::path v_path = FileManager::VirtualPath(service_->mount_path_, req->path());
+			std::cout << "virutal path : " << v_path.generic_string() << std::endl; 
+            fs::path dir_path = FileManager::ResolvePath(service_->mount_path_, v_path.generic_string());
+
 			std::cout << "listing files for: " << dir_path.generic_string() << std::endl;
             fflush(stdout);
             bool is_dir = fs::is_directory(dir_path);
