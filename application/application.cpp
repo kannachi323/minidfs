@@ -6,10 +6,9 @@ namespace minidfs {
             init_platform();
             init_client();
 
-            AssetManager::get().load_theme("assets/themes/default.css");
+            
             init_views();
             
-
         } catch (const std::exception& e) {
             std::cout << "Exception caught in Application::run: " << e.what() << std::endl;
             cleanup();

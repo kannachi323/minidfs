@@ -93,6 +93,10 @@ namespace minidfs {
         configure_imgui_io();
         configure_imgui_style();
 
+        AssetManager::get().load_themes();
+        AssetManager::get().load_fonts();
+
+      
         ImGui_ImplGlfw_InitForOpenGL(window_, true);
         ImGui_ImplOpenGL3_Init(glsl_version_);
     }
@@ -133,16 +137,24 @@ namespace minidfs {
 
     void WindowsApp::render_frame() {
         ImGui::Render();
+        
+        int w, h;
+        glfwGetFramebufferSize(window_, &w, &h);
+        if (w == 0 || h == 0)
+            return;
+
+        glfwMakeContextCurrent(window_);
+        glViewport(0, 0, w, h);
         glClearColor(0.11f, 0.11f, 0.11f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         
 		ImGuiIO& io = ImGui::GetIO();
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
-            GLFWwindow* backup = glfwGetCurrentContext();
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
-            glfwMakeContextCurrent(backup);
+            glfwMakeContextCurrent(window_);
         }
 
         glfwSwapBuffers(window_);

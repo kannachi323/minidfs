@@ -24,6 +24,7 @@
 #include "minidfs_client.h"
 
 #include "panel.h"
+#include "panel_ui.h"
 #include "ui_registry.h"
 #include "app_view_registry.h"
 #include "file_explorer_panel.h"

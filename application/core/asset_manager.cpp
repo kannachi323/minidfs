@@ -5,7 +5,6 @@
 #include <sstream>
 
 namespace minidfs {
-
     void AssetManager::shutdown() {
         for (auto& [name, texture] : svg_textures_) {
             unload_svg(texture);
@@ -24,8 +23,15 @@ namespace minidfs {
         return instance;
     }
 
-    void AssetManager::load_theme(const std::string& path) {
-        std::ifstream file(path);
+    void AssetManager::load_fonts() {
+        ImGuiIO& io = ImGui::GetIO();
+        fonts_[FontID::DEFAULT] = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto-Regular.ttf", 18.0f);;
+        fonts_[FontID::ROBOTO_SMALL] = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto-Regular.ttf", 16.0f);
+        fonts_[FontID::ROBOTO_LARGE] = io.Fonts->AddFontFromFileTTF("assets/fonts/Roboto-Regular.ttf", 24.0f);
+    }
+
+    void AssetManager::load_themes() {
+        std::ifstream file("assets/themes/default.css");
         if (file.is_open()) {
             std::stringstream buffer;
             buffer << file.rdbuf();
@@ -33,9 +39,14 @@ namespace minidfs {
             
             // If theme changes, we must clear cache to re-render icons
             svg_textures_.clear(); 
-
-            std::cout << "Loaded theme from: " << path << std::endl;
         }
+    }
+
+    ImFont* AssetManager::get_font(const FontID& font_id) const {
+        if (!fonts_.contains(font_id)) {
+            return fonts_.at(FontID::DEFAULT);
+        }
+        return fonts_.at(font_id);
     }
 
     const std::string& AssetManager::get_current_theme() const {

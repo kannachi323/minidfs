@@ -11,20 +11,25 @@
 
 namespace minidfs::FileExplorer {
 
+
     class FileSidebarPanel : public Panel {
     public:
         FileSidebarPanel(UIRegistry& registry, WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client);
         void render();
 
     private:
-        void show_main_navigation(FileSidebarState& state, float width, float padding);
-        void show_quick_access(float width, float padding);
-        void show_modals(FileSidebarState& state);
-        void show_storage_info(float width, float padding);
+        void show_add_item(FileSidebarState& state);
+        void show_quick_access();
+        void show_storage_info();
 
+    private:
         UIRegistry& registry_;
         WorkerPool& worker_pool_;
         std::shared_ptr<MiniDFSClient> client_;
+    private:
+        float width_ = 0;
+        float padding_ = 0;
+        float offset_ = 0;
     };
 
 }
