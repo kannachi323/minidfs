@@ -11,6 +11,7 @@ namespace minidfs::FileExplorer {
         
         bool show_chooser_modal = false;
         bool show_create_entry_modal = false;
+        bool show_uploader_modal = false;
         bool create_is_dir = false;
         
         // 4. Action Feedback

@@ -1,6 +1,4 @@
 # cmake/vendor.cmake
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/vendor/minidfs_sdk/Release")
-list(APPEND CMAKE_PREFIX_PATH "${CMAKE_SOURCE_DIR}/vendor/minidfs_sdk/Debug")
 
 find_package(gRPC CONFIG QUIET)
 find_package(Protobuf CONFIG QUIET)
@@ -22,11 +20,18 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-add_subdirectory(${CMAKE_SOURCE_DIR}/vendor/glfw)
+add_subdirectory(${CMAKE_SOURCE_DIR}/vendor/glfw EXCLUDE_FROM_ALL)
 
 # LunaSVG
 set(LUNASVG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
-add_subdirectory(${CMAKE_SOURCE_DIR}/vendor/lunasvg)
+add_subdirectory(${CMAKE_SOURCE_DIR}/vendor/lunasvg EXCLUDE_FROM_ALL)
+
+# GoogleTest
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
+add_subdirectory(${CMAKE_SOURCE_DIR}/vendor/googletest EXCLUDE_FROM_ALL)
+
 
 
 message(STATUS "SDK fully loaded. No more compiler checks needed!")
