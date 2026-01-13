@@ -6,7 +6,8 @@
 #include "worker_pool.h"
 #include "app_view.h"
 #include "file_explorer_view.h"
-#include "asset_manager.h" 
+#include "asset_manager.h"
+#include "file_sync_engine.h" 
 
 namespace minidfs {
     class Application {
@@ -17,6 +18,7 @@ namespace minidfs {
         void run();
         void init_client();
         void init_views();
+		void init_file_sync_engine();
 
     protected:
         // Pure virtual functions (the "Interface")
@@ -33,6 +35,7 @@ namespace minidfs {
 
         WorkerPool worker_pool_;
         std::shared_ptr<MiniDFSClient> client_;
+        std::shared_ptr<FileSyncEngine> file_sync_engine_;
 
     };  
 };

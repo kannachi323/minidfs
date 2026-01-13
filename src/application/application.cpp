@@ -7,7 +7,9 @@ namespace minidfs {
         try {
             init_platform();
             init_client();
+            init_file_sync_engine();
             init_views();
+
             
         } catch (const std::exception& e) {
             std::cout << "Exception caught in Application::run: " << e.what() << std::endl;
@@ -21,6 +23,20 @@ namespace minidfs {
             render_frame();
         }
         cleanup();
+    }
+
+    void Application::init_client() {
+        auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
+        client_ = std::make_shared<MiniDFSClient>(channel, "minidfs");
+    }
+
+    void Application::init_file_sync_engine() {
+        if (!client_) {
+            throw std::runtime_error("Client not initialized before initializing FileSyncEngine.");
+        }
+        file_sync_engine_ = std::make_unique<minidfs::FileSyncEngine>(client_);
+        file_sync_engine_->init_sync_resources();
+        file_sync_engine_->start_sync();
     }
 
     void Application::init_views() {
@@ -37,10 +53,9 @@ namespace minidfs {
         AppViewRegistryController::switch_view(ViewID::FileExplorer);
     }
 
-    void Application::init_client() {
-        auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-        client_ = std::make_shared<MiniDFSClient>(channel, "minidfs");
-    }
+    
+
+   
 
     
 };

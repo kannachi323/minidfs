@@ -8,37 +8,10 @@ MiniDFSClient::MiniDFSClient(std::shared_ptr<grpc::Channel> channel, const std::
 }
 
 MiniDFSClient::~MiniDFSClient() {
-    EndSync();
 }
 
 std::string MiniDFSClient::GetClientMountPath() const {
     return mount_path_;
-}
-
-/* =========================
-   File update streaming
-   ========================= */
-
-void MiniDFSClient::BeginSync(const std::string& client_id) {
-    file_update_thread_ = std::thread([this, client_id]() {
-        sync_context_ = std::make_unique<grpc::ClientContext>();
-        grpc::StatusCode status = FileUpdateCallback(sync_context_.get(), client_id);
-
-        if (status != grpc::StatusCode::OK &&
-            status != grpc::StatusCode::CANCELLED) {
-            std::cerr << "FileUpdateCallback error: "
-                      << static_cast<int>(status) << std::endl;
-        }
-    });
-}
-
-void MiniDFSClient::EndSync() {
-    if (sync_context_) {
-        sync_context_->TryCancel();
-    }
-    if (file_update_thread_.joinable()) {
-        file_update_thread_.join();
-    }
 }
 
 /* =========================

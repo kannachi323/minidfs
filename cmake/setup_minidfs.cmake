@@ -24,12 +24,10 @@ add_custom_command(
 )
 
 # --- 2. Combined Library ---
-set(MINIDFS_SRCS
-    "src/dfs/file_manager.cpp" 
-    "src/dfs/minidfs_impl.cpp"
-    "src/dfs/minidfs_client.cpp"
-    "src/dfs/pubsub_manager.cpp"
-    ${GEN_FILES} # Add generated files directly here
+file(GLOB_RECURSE MINIDFS_SRCS
+    "src/dfs/*.cpp"
+    "src/dfs/*.h"
+    ${GEN_FILES}
 )
 
 add_library(minidfs STATIC ${MINIDFS_SRCS})

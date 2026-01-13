@@ -65,7 +65,6 @@ protected:
 
     void TearDown() override {
         server_impl->file_manager_->ReleaseAllLocks();
-        client->EndSync();
         server->Shutdown();
         fs::remove_all(server_mount);
         fs::remove_all(client_mount);

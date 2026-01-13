@@ -35,9 +35,6 @@ public:
 
     grpc::StatusCode FileUpdateCallback(grpc::ClientContext* sync_context, const std::string& client_id);
 
-    void BeginSync(const std::string& client_id);
-    void EndSync();
-
     std::string GetClientMountPath() const;
     
 private:
