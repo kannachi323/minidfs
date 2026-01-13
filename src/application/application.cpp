@@ -7,7 +7,7 @@ namespace minidfs {
         try {
             init_platform();
             init_client();
-            init_file_sync_engine();
+            init_file_sync();
             init_views();
 
             
@@ -30,13 +30,21 @@ namespace minidfs {
         client_ = std::make_shared<MiniDFSClient>(channel, "minidfs");
     }
 
-    void Application::init_file_sync_engine() {
+    void Application::init_file_sync() {
         if (!client_) {
-            throw std::runtime_error("Client not initialized before initializing FileSyncEngine.");
+            throw std::runtime_error("Client not initialized before initializing FileSync.");
         }
-        file_sync_engine_ = std::make_unique<minidfs::FileSyncEngine>(client_);
-        file_sync_engine_->init_sync_resources();
-        file_sync_engine_->start_sync();
+
+        #ifdef _WIN32
+            file_sync_ = std::make_unique<minidfs::FileSyncWin32>(client_);
+        #elif defined(__APPLE__)
+            file_sync_ = std::make_unique<minidfs::FileSyncMac>(client_);
+        #else
+            file_sync_ = std::make_unique<minidfs::FileSyncLinux>(client_);
+        #endif
+
+        file_sync_->init_sync_resources();
+        file_sync_->start_sync();
     }
 
     void Application::init_views() {

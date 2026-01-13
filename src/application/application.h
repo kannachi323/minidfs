@@ -7,7 +7,8 @@
 #include "app_view.h"
 #include "file_explorer_view.h"
 #include "asset_manager.h"
-#include "file_sync_engine.h" 
+#include "dfs/FileSync/file_sync.h" 
+#include "dfs/FileSync/file_sync_win.h"
 
 namespace minidfs {
     class Application {
@@ -18,7 +19,7 @@ namespace minidfs {
         void run();
         void init_client();
         void init_views();
-		void init_file_sync_engine();
+		void init_file_sync();
 
     protected:
         // Pure virtual functions (the "Interface")
@@ -35,7 +36,14 @@ namespace minidfs {
 
         WorkerPool worker_pool_;
         std::shared_ptr<MiniDFSClient> client_;
-        std::shared_ptr<FileSyncEngine> file_sync_engine_;
+
+        #ifdef _WIN32
+            std::unique_ptr<FileSyncWin32> file_sync_;
+        #elif defined(__APPLE__)
+            std::unique_ptr<FileSyncMac> file_sync_;
+        #else defined(__linux__)
+            std::unique_ptr<FileSyncLinux> file_sync_;
+        #endif
 
     };  
 };

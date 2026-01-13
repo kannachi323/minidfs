@@ -1,15 +1,14 @@
-#include "file_sync_engine.h"
+#include "file_sync_win.h"
 
-
-namespace minidfs {
 #ifdef _WIN32
 
-    FileSyncEngine::FileSyncEngine(std::shared_ptr<MiniDFSClient> client)
-        : client_(std::move(client)) {
+namespace minidfs {
+    FileSyncWin32::FileSyncWin32(std::shared_ptr<MiniDFSClient> client)
+        : FileSync(std::move(client)) {
         
     }
-    
-    FileSyncEngine::~FileSyncEngine() {
+
+    FileSyncWin32::~FileSyncWin32() {
         running_ = false;
         if (stop_signal_ != NULL) {
             SetEvent(stop_signal_);
@@ -27,7 +26,7 @@ namespace minidfs {
         if (stop_signal_ != NULL) CloseHandle(stop_signal_);
     }
 
-    void FileSyncEngine::init_sync_resources() {
+    void FileSyncWin32::init_sync_resources() {
         if (client_ == nullptr) {
             throw std::runtime_error("MiniDFSClient is not initialized");
         }
@@ -50,13 +49,8 @@ namespace minidfs {
         }
     }
 
-    void FileSyncEngine::start_sync() {
-        std::cout << "file sync engine started" << std::endl;
-        running_ = true;
-        sync_thread_ = std::thread(&FileSyncEngine::sync_loop, this);
-    }
 
-    void FileSyncEngine::sync_loop() {
+    void FileSyncWin32::sync_loop() {
         while (running_) {
             ResetEvent(overlapped_.hEvent);
             
@@ -81,9 +75,8 @@ namespace minidfs {
             DWORD wait_status = WaitForMultipleObjects(2, wait_handles, FALSE, INFINITE);
 
             if (wait_status == WAIT_OBJECT_0) {
-                DWORD bytes_transferred = 0;
-                if (GetOverlappedResult(directory_handle_, &overlapped_, &bytes_transferred, FALSE)) {
-                    process_changes(bytes_transferred);
+                if (GetOverlappedResult(directory_handle_, &overlapped_, &bytes_transferred_, FALSE)) {
+                    process_changes();
                 }
             } else if (wait_status == WAIT_OBJECT_0 + 1) {
                 break; 
@@ -91,8 +84,8 @@ namespace minidfs {
         }
     }
 
-    void FileSyncEngine::process_changes(DWORD bytes_transferred) {
-        if (bytes_transferred == 0) process_overflow();
+    void FileSyncWin32::process_changes() {
+        if (bytes_transferred_ == 0) process_overflow();
         uint8_t* p_curr = reinterpret_cast<uint8_t*>(buffer_);
 
         while (true) {
@@ -109,16 +102,21 @@ namespace minidfs {
         }
     }
 
-    void FileSyncEngine::process_overflow() {
+    void FileSyncWin32::process_overflow() {
         std::cout << "Overflow detected in file change notifications." << std::endl;
     }
 
-    void FileSyncEngine::handle_action(DWORD action, const std::wstring& file_name) {
-        std::cout << "Action: " << action << std::endl;
+    void FileSyncWin32::handle_action(DWORD action, const std::wstring& file_name) {
+        switch (action) {
+        case FILE_ACTION_ADDED:
+            std::wcout << L"File added: " << file_name << std::endl;
+            break;
+        }
     }
+}
+
 
 #endif
-}
 
 
 
