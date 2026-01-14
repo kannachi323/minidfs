@@ -8,6 +8,7 @@ libs/*
 *.json
 src/proto_src/*
 vendor/minidfs_sdk/*
+config/*
 
 
 

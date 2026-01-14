@@ -108,6 +108,10 @@ add_custom_command(TARGET minidfs_client POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_CURRENT_SOURCE_DIR}/vendor/octicons/icons"
         "$<TARGET_FILE_DIR:minidfs_client>/assets/icons"
+
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${CMAKE_CURRENT_SOURCE_DIR}/config"
+        "$<TARGET_FILE_DIR:minidfs_client>/config"
 )
 
 

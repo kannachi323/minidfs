@@ -1,4 +1,4 @@
-#include "file_manager.h"
+#include "dfs/file_manager.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -136,6 +136,7 @@ bool FileManager::ReadFile(const std::string& client_id, const std::string& file
 }
 
 FileStatus FileManager::RemoveFile(const std::string& client_id, const std::string& file_path) {
+    std::cout << "Removing file at: " << file_path << std::endl;
     std::lock_guard<std::mutex> lock(file_lock_mu_);
 
     auto it = file_locks_.find(file_path);

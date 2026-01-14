@@ -21,6 +21,6 @@
 
 #include "minidfs.grpc.pb.h"
 #include "minidfs.pb.h"
-#include "minidfs_impl.h"
-#include "minidfs_client.h"
+#include "dfs/server/minidfs_impl.h"
+#include "dfs/client/minidfs_client.h"
 

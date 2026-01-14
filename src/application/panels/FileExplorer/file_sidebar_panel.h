@@ -4,7 +4,7 @@
 
 #include "ui_registry.h"
 #include "worker_pool.h"
-#include "minidfs_client.h"
+
 #include "imgui.h"
 #include "file_sidebar_state.h"
 #include "file_explorer_state.h"

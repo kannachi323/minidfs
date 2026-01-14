@@ -4,7 +4,7 @@
 #include <atomic>
 #include <queue>
 #include "proto_src/minidfs.grpc.pb.h"
-#include "file_manager.h"
+#include "dfs/file_manager.h"
 #include "pubsub_manager.h"
 
 class MiniDFSImpl final : public minidfs::MiniDFSService::CallbackService {
