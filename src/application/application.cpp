@@ -1,7 +1,5 @@
 #include "application.h"
 
-
-
 namespace minidfs {
     void Application::run() {
         try {
@@ -27,7 +25,8 @@ namespace minidfs {
 
     void Application::init_client() {
         auto channel = grpc::CreateChannel("localhost:50051", grpc::InsecureChannelCredentials());
-        client_ = std::make_shared<MiniDFSClient>(channel, "minidfs");
+        client_ = std::make_shared<MiniDFSClient>(channel, 
+            "/Users/mtccool668/projects/minidfs/build/bin/minidfs", "c47f5011-5c7c-4955-9f90-eed53c09d445");
     }
 
     void Application::init_file_sync() {

@@ -14,11 +14,13 @@ namespace minidfs {
         ~FileSyncWin32();
 
         void init_sync_resources() override;
+        void start_sync() override;
+    
     
     private:
-        void sync_loop() override;
-        void process_changes() override;
-        void process_overflow() override;
+        void sync_loop();
+        void process_changes();
+        void process_overflow();
         void handle_action(DWORD action, const std::wstring& file_name);
     private:
         HANDLE directory_handle_;

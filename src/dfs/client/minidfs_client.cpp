@@ -2,9 +2,8 @@
 #include <iostream>
 #include <fstream>
 
-MiniDFSClient::MiniDFSClient(std::shared_ptr<grpc::Channel> channel, const std::string& mount_path) {
-    stub_ = minidfs::MiniDFSService::NewStub(channel);
-    mount_path_ = mount_path;
+MiniDFSClient::MiniDFSClient(std::shared_ptr<grpc::Channel> channel, const std::string& mount_path, const std::string& client_id)
+    : stub_(minidfs::MiniDFSService::NewStub(channel)), mount_path_(mount_path), client_id_(client_id) {
 }
 
 MiniDFSClient::~MiniDFSClient() {
@@ -18,9 +17,9 @@ std::string MiniDFSClient::GetClientMountPath() const {
    Distributed file lock
    ========================= */
 
-grpc::StatusCode MiniDFSClient::GetReadLock(const std::string& client_id, const std::string& file_path) {
+grpc::StatusCode MiniDFSClient::GetReadLock(const std::string& file_path) {
     minidfs::FileLockReq request;
-    request.set_client_id(client_id);
+    request.set_client_id(client_id_);
     request.set_file_path(file_path);
     request.set_op(minidfs::FileOpType::READ);
 
@@ -31,9 +30,9 @@ grpc::StatusCode MiniDFSClient::GetReadLock(const std::string& client_id, const 
     return status.error_code();
 }
 
-grpc::StatusCode MiniDFSClient::GetWriteLock(const std::string& client_id, const std::string& file_path, bool create) {
+grpc::StatusCode MiniDFSClient::GetWriteLock(const std::string& file_path, bool create) {
     minidfs::FileLockReq request;
-    request.set_client_id(client_id);
+    request.set_client_id(client_id_);
     request.set_file_path(file_path);
 
     if (create) {
@@ -52,8 +51,8 @@ grpc::StatusCode MiniDFSClient::GetWriteLock(const std::string& client_id, const
 
 
 
-grpc::StatusCode MiniDFSClient::RemoveFile(const std::string& client_id, const std::string& file_path) {
-    grpc::StatusCode lock_status = GetWriteLock(client_id, file_path, false);
+grpc::StatusCode MiniDFSClient::RemoveFile(const std::string& file_path) {
+    grpc::StatusCode lock_status = GetWriteLock(file_path, false);
     if (lock_status != grpc::StatusCode::OK) {
         return lock_status;
     }
@@ -62,7 +61,7 @@ grpc::StatusCode MiniDFSClient::RemoveFile(const std::string& client_id, const s
     std::lock_guard<std::mutex> session_lock(session->mu);
 
     minidfs::DeleteFileReq request;
-    request.set_client_id(client_id);
+    request.set_client_id(client_id_);
     request.set_file_path(file_path);
 
     minidfs::DeleteFileRes response;
@@ -78,8 +77,8 @@ grpc::StatusCode MiniDFSClient::RemoveFile(const std::string& client_id, const s
    Store file (WRITE)
    ========================= */
 
-grpc::StatusCode MiniDFSClient::StoreFile(const std::string& client_id, const std::string& file_path) {
-    grpc::StatusCode lock_status = GetWriteLock(client_id, file_path, true);
+grpc::StatusCode MiniDFSClient::StoreFile(const std::string& file_path) {
+    grpc::StatusCode lock_status = GetWriteLock(file_path, true);
     if (lock_status != grpc::StatusCode::OK) {
         return lock_status;
     }
@@ -101,7 +100,7 @@ grpc::StatusCode MiniDFSClient::StoreFile(const std::string& client_id, const st
 
     while (infile.read(buffer, sizeof(buffer)) || infile.gcount() > 0) {
         minidfs::FileBuffer chunk;
-        chunk.set_client_id(client_id);
+        chunk.set_client_id(client_id_);
         chunk.set_file_path(file_path);
         chunk.set_offset(offset);
         chunk.set_data(buffer, infile.gcount());
@@ -122,8 +121,8 @@ grpc::StatusCode MiniDFSClient::StoreFile(const std::string& client_id, const st
    Fetch file (READ)
    ========================= */
 
-grpc::StatusCode MiniDFSClient::FetchFile(const std::string& client_id, const std::string& file_path) {
-    grpc::StatusCode lock_status = GetReadLock(client_id, file_path);
+grpc::StatusCode MiniDFSClient::FetchFile(const std::string& file_path) {
+    grpc::StatusCode lock_status = GetReadLock(file_path);
     if (lock_status != grpc::StatusCode::OK) {
         return lock_status;
     }
@@ -139,7 +138,7 @@ grpc::StatusCode MiniDFSClient::FetchFile(const std::string& client_id, const st
 
     minidfs::FetchFileReq request;
     request.set_file_path(file_path);
-    request.set_client_id(client_id);
+    request.set_client_id(client_id_);
 
     grpc::ClientContext context;
     auto reader = stub_->FetchFile(&context, request);
@@ -166,38 +165,6 @@ grpc::StatusCode MiniDFSClient::ListFiles(const std::string& path, minidfs::List
     grpc::ClientContext context;
 
     grpc::Status status = stub_->ListFiles(&context, request, response);
-    return status.error_code();
-}
-
-
-/* =========================
-   Server push callback
-   ========================= */
-
-grpc::StatusCode MiniDFSClient::FileUpdateCallback(
-    grpc::ClientContext* context,
-    const std::string& client_id)
-{
-    minidfs::FileUpdate req;
-    req.set_client_id(client_id);
-
-    auto reader = stub_->FileUpdateCallback(context, req);
-    
-    minidfs::FileUpdate res;
-    while (reader->Read(&res)) {
-        switch (res.type()) {
-            case minidfs::FileUpdateType::MODIFIED:
-                FetchFile(client_id, res.file_info().file_path());
-                break;       
-            case minidfs::FileUpdateType::DELETED:
-                fs::remove(res.file_info().file_path());
-                break;
-            default:
-                break;
-        }
-    }
-
-    grpc::Status status = reader->Finish();
     return status.error_code();
 }
 

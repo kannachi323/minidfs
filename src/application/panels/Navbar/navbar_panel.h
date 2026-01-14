@@ -13,7 +13,7 @@ namespace minidfs {
     public:
         NavbarPanel(UIRegistry& ui_registry);
         ~NavbarPanel() override = default;
-        void render();
+        void render() override;
 
 
     private:

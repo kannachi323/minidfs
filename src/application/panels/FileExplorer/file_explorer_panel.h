@@ -6,7 +6,7 @@
 #include "panel.h"
 #include "worker_pool.h"
 #include "file_explorer_state.h"
-#include "minidfs_client.h"
+
 #include "svg_loader.h"
 
 namespace minidfs::FileExplorer {

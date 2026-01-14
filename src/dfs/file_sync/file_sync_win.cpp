@@ -26,6 +26,11 @@ namespace minidfs {
         if (stop_signal_ != NULL) CloseHandle(stop_signal_);
     }
 
+    void FileSyncWin32::start_sync() {
+        running_ = true;
+        sync_thread_ = std::thread(&FileSync::sync_loop, this);
+    }
+
     void FileSyncWin32::init_sync_resources() {
         if (client_ == nullptr) {
             throw std::runtime_error("MiniDFSClient is not initialized");
@@ -76,7 +81,7 @@ namespace minidfs {
 
             if (wait_status == WAIT_OBJECT_0) {
                 if (GetOverlappedResult(directory_handle_, &overlapped_, &bytes_transferred_, FALSE)) {
-                    process_changes();
+                    handle_change();
                 }
             } else if (wait_status == WAIT_OBJECT_0 + 1) {
                 break; 
@@ -84,8 +89,8 @@ namespace minidfs {
         }
     }
 
-    void FileSyncWin32::process_changes() {
-        if (bytes_transferred_ == 0) process_overflow();
+    void FileSyncWin32::handle_change() {
+        if (bytes_transferred_ == 0) handle_overflow();
         uint8_t* p_curr = reinterpret_cast<uint8_t*>(buffer_);
 
         while (true) {
@@ -102,7 +107,7 @@ namespace minidfs {
         }
     }
 
-    void FileSyncWin32::process_overflow() {
+    void FileSyncWin32::handle_overflow() {
         std::cout << "Overflow detected in file change notifications." << std::endl;
     }
 

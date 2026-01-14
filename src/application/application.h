@@ -7,8 +7,9 @@
 #include "app_view.h"
 #include "file_explorer_view.h"
 #include "asset_manager.h"
-#include "dfs/FileSync/file_sync.h" 
-#include "dfs/FileSync/file_sync_win.h"
+#include "dfs/file_sync/file_sync.h" 
+#include "dfs/file_sync/file_sync_win.h"
+#include "dfs/file_sync/file_sync_mac.h"
 
 namespace minidfs {
     class Application {
@@ -41,7 +42,7 @@ namespace minidfs {
             std::unique_ptr<FileSyncWin32> file_sync_;
         #elif defined(__APPLE__)
             std::unique_ptr<FileSyncMac> file_sync_;
-        #else defined(__linux__)
+        #elif defined(__linux__)
             std::unique_ptr<FileSyncLinux> file_sync_;
         #endif
 
