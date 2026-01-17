@@ -1,11 +1,11 @@
 #pragma once
 
 #include "ui_registry.h"
-#include "file_explorer_state.h"
+#include "core/ui_registry.h"
 #include <string>
 
-namespace minidfs::FileExplorer {
-    struct FileSidebarState : public UIState {
+namespace minidfs::panel {
+    struct FileSidebarState : public core::UIState {
         // 2. Input Buffers: For "New File" or "New Folder" modals
         char name_buffer[256] = "";
         

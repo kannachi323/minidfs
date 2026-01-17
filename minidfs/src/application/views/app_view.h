@@ -1,9 +1,7 @@
 #pragma once
-#include <vector>
-#include <memory>
-#include "panel.h"
 
-namespace minidfs {
+
+namespace minidfs::view {
     enum class ViewID {
         Auth,
         FileExplorer,
@@ -15,7 +13,7 @@ namespace minidfs {
     class AppView {
     public:
         AppView() = default;
-        ~AppView() = default;
+        virtual ~AppView() = default;
 
         virtual ViewID get_view_id() = 0;
 

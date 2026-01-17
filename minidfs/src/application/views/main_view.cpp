@@ -1,24 +1,25 @@
-#include "file_explorer_view.h"
+#include "main_view.h"
 
-namespace minidfs::FileExplorer {
-    FileExplorerView::FileExplorerView(UIRegistry& ui_registry,
+
+namespace minidfs::view {
+    MainView::MainView(UIRegistry& ui_registry,
         WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client) : 
         ui_registry_(ui_registry), worker_pool_(worker_pool), client_(client) {
 
         init_panels();
     }
   
-    void FileExplorerView::init_panels() {
-        file_explorer_panel_ = std::make_shared<FileExplorerPanel>(ui_registry_, worker_pool_, client_);
-        file_sidebar_panel_ = std::make_shared<FileSidebarPanel>(ui_registry_, worker_pool_, client_);
-        navbar_panel_ = std::make_shared<NavbarPanel>(ui_registry_);
+    void MainView::init_panels() {
+        file_explorer_panel_ = std::make_shared<panel::FileExplorerPanel>(ui_registry_, worker_pool_, client_);
+        file_sidebar_panel_ = std::make_shared<panel::FileSidebarPanel>(ui_registry_, worker_pool_, client_);
+        navbar_panel_ = std::make_shared<panel::NavbarPanel>(ui_registry_);
     }
 
-    ViewID FileExplorerView::get_view_id() {
-        return ViewID::FileExplorer;
+    view::ViewID MainView::get_view_id() {
+        return view::ViewID::FileExplorer;
     }
     
-    void FileExplorerView::render() {
+    void MainView::render() {
         ImGuiViewport* viewport = ImGui::GetMainViewport();
 
         // ---------------------------------------------------------

@@ -3,7 +3,7 @@
 #include "imgui.h"
 #include <string>
 
-namespace minidfs {
+namespace minidfs::panel {
     class Panel {
     public:
         virtual ~Panel() = default;

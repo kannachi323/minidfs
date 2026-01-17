@@ -9,11 +9,11 @@ namespace minidfs::core {
 
     class AppViewRegistry {
     public:
-        void register_view(ViewID id, std::unique_ptr<AppView> view) {
+        void register_view(view::ViewID id, std::unique_ptr<view::AppView> view) {
             views_[id] = std::move(view);
         }
 
-        void switch_view(ViewID id) {
+        void switch_view(view::ViewID id) {
             if (views_.find(id) != views_.end()) {
                 current_view_ = views_[id].get();
             }
@@ -25,13 +25,13 @@ namespace minidfs::core {
             }
         }
 
-        ViewID get_current_id() const {
-            return current_view_ ? current_view_->get_view_id() : ViewID::None;
+        view::ViewID get_current_id() const {
+            return current_view_ ? current_view_->get_view_id() : view::ViewID::None;
         }
 
     private:
-        std::unordered_map<ViewID, std::unique_ptr<AppView>> views_;
-        AppView* current_view_ = nullptr;
+        std::unordered_map<view::ViewID, std::unique_ptr<view::AppView>> views_;
+        view::AppView* current_view_ = nullptr;
     };
 
     class AppViewRegistryController {
@@ -39,14 +39,14 @@ namespace minidfs::core {
         static void init(AppViewRegistry* registry) {
             s_registry = registry;
         }
-        static void switch_view(ViewID id) {
+        static void switch_view(view::ViewID id) {
             std::lock_guard<std::mutex> lock(s_mutex);
             if (s_registry) {
                 s_registry->switch_view(id);
             }
         }
     private:
-        inline static AppViewRegistry* s_registry = nullptr;
+        inline static core::AppViewRegistry* s_registry = nullptr;
         inline static std::mutex s_mutex;
     };
 };

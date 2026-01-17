@@ -1,21 +1,14 @@
 #pragma once
-#include "panel.h"
-#include "panel_ui.h"
 #include "ui_registry.h"
 #include "app_view_registry.h"
 #include "worker_pool.h"
-#include "app_view.h"
-#include "file_explorer_view.h"
-#include "asset_manager.h"
-#include "dfs/file_sync/file_sync.h" 
-#include "dfs/file_sync/file_sync_win.h"
 #include "dfs/file_sync/file_sync_mac.h"
 
 namespace minidfs {
     class Application {
     public:
 		Application() = default;
-        ~Application() = default;
+        virtual ~Application() = default;
 
         void run();
         void init_client();
@@ -31,11 +24,11 @@ namespace minidfs {
         virtual void cleanup() = 0;
 
     protected:
-        UIRegistry ui_registry_;
-        AppViewRegistry app_view_registry_;
+        core::UIRegistry ui_registry_;
+        core::AppViewRegistry app_view_registry_;
 
 
-        WorkerPool worker_pool_;
+        core::WorkerPool worker_pool_;
         std::shared_ptr<MiniDFSClient> client_;
 
         #ifdef _WIN32

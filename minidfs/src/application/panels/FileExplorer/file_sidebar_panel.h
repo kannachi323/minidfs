@@ -5,15 +5,13 @@
 #include "ui_registry.h"
 #include "worker_pool.h"
 
-#include "imgui.h"
 #include "file_sidebar_state.h"
-#include "file_explorer_state.h"
-#include "svg_loader.h"
 
-namespace minidfs::FileExplorer {
+
+namespace minidfs::panel {
     class FileSidebarPanel : public Panel {
     public:
-        FileSidebarPanel(UIRegistry& registry, WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client);
+        FileSidebarPanel(core::UIRegistry& registry, core::WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client);
         void render();
 
     private:
@@ -25,8 +23,8 @@ namespace minidfs::FileExplorer {
     
 
     private:
-        UIRegistry& registry_;
-        WorkerPool& worker_pool_;
+        core::UIRegistry& registry_;
+        core::WorkerPool& worker_pool_;
         std::shared_ptr<MiniDFSClient> client_;
     };
 

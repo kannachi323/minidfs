@@ -11,10 +11,9 @@
 #include "minidfs.pb.h"
 
 namespace fs = std::filesystem;
-using namespace minidfs::core;
 
-namespace minidfs::FileExplorer {
-    struct FileExplorerState : public UIState {
+namespace minidfs::panel {
+    struct FileExplorerState : public core::UIState {
         char current_path[512] = "";
         char search_path[512] = "";
         std::vector<minidfs::FileInfo> files;

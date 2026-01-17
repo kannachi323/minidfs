@@ -1,7 +1,7 @@
 #include "navbar_panel.h"
 #include "asset_manager.h"
 
-namespace minidfs {
+namespace minidfs::panel {
     NavbarPanel::NavbarPanel(UIRegistry& ui_registry) : ui_registry_(ui_registry) {
 
     }
@@ -58,7 +58,8 @@ namespace minidfs {
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0, 0, 0, 0));
 
         if (ImGui::ImageButton(label, (void*)(intptr_t)logo_image.id, ImVec2(logo_size, logo_size))) {
-            std::cout << "Logo clicked!\n";
+            auto& state = ui_registry_.get_state<NavbarState>("Navbar");
+            state.handle_logo_click();
         }
 
         ImGui::PopStyleColor(3);

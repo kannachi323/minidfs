@@ -1,9 +1,11 @@
 #include "file_sidebar_panel.h"
+#include "file_explorer_state.h"
 #include "panel_ui.h"
 #include "asset_manager.h"
 
-namespace minidfs::FileExplorer {
-    FileSidebarPanel::FileSidebarPanel(UIRegistry& registry, WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client)
+
+namespace minidfs::panel {
+    FileSidebarPanel::FileSidebarPanel(core::UIRegistry& registry, core::WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client)
         : registry_(registry), worker_pool_(worker_pool), client_(client) {
 
 
@@ -51,7 +53,7 @@ namespace minidfs::FileExplorer {
         ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.5f, 0.5f, 0.5f, 0.3f));
 
         float b_width = width - (padding * 2);
-        SVGTexture& plus_icon = AssetManager::get().get_svg_texture("plus-24", 24);
+        core::SVGTexture& plus_icon = core::AssetManager::get().get_svg_texture("plus-24", 24);
 
         if (IconButton("##add_file", plus_icon.id, "New", ImVec2(b_width, 48.0f), nullptr, 18.0f)) {
             state.show_chooser_modal = true;

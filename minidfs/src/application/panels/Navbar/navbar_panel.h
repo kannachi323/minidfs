@@ -1,14 +1,11 @@
 #pragma once
-#include <memory>
-#include "imgui.h"
 #include "ui_registry.h"
-#include "app_view_registry.h"
 #include "navbar_state.h"
 #include "panel.h"
 #include "svg_loader.h"
 
 
-namespace minidfs {
+namespace minidfs::panel {
     class NavbarPanel : public Panel {
     public:
         NavbarPanel(UIRegistry& ui_registry);

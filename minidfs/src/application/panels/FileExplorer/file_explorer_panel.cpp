@@ -6,7 +6,7 @@ namespace fs = std::filesystem;
 
 using namespace minidfs::core;
 
-namespace minidfs::FileExplorer {
+namespace minidfs::panel {
     
     FileExplorerPanel::FileExplorerPanel(UIRegistry& registry, WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client) 
         : registry_(registry), worker_pool_(worker_pool), client_(std::move(client)) {
