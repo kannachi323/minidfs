@@ -99,6 +99,7 @@ target_link_libraries(minidfs_client PRIVATE
     glfw
     lunasvg
     OpenGL::GL
+    CURL::libcurl
 )
 
 target_precompile_headers(minidfs_client PRIVATE 

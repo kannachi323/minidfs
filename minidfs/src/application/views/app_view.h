@@ -4,8 +4,10 @@
 namespace minidfs::view {
     enum class ViewID {
         Auth,
+        Login,
         FileExplorer,
         Settings,
+        TS,
         None
     };
 

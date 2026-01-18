@@ -3,17 +3,17 @@
 #include <memory>
 
 #include "app_view.h"
-#include "auth_register_panel.h"
+#include "ts_panel.h"
 #include "ui_registry.h"
 
 using namespace minidfs::core;
-using namespace minidfs::auth;
+using namespace minidfs::panel;
 
 namespace minidfs::view {
-    class AuthView : public AppView {
+    class TSView : public AppView {
     public:
-        AuthView(UIRegistry& ui_registry);
-        ~AuthView() override = default;
+        TSView(UIRegistry& ui_registry);
+        ~TSView() override = default;
 
         void render() override;
         ViewID get_view_id() override;
@@ -23,6 +23,6 @@ namespace minidfs::view {
     private:
         UIRegistry& ui_registry_;
 
-        std::shared_ptr<AuthRegisterPanel> auth_register_panel_;
+        std::shared_ptr<TSPanel> ts_panel_;
     };
 }

@@ -1,4 +1,4 @@
-#include "auth_register_panel.h"
+#include "auth_login_panel.h"
 #include "imgui.h"
 #include "util.h"
 #include "asset_manager.h"
@@ -8,12 +8,12 @@
 #include "panel_ui.h"
 
 namespace minidfs::panel {
-    AuthRegisterPanel::AuthRegisterPanel(UIRegistry& registry)
+    AuthLoginPanel::AuthLoginPanel(UIRegistry& registry)
         : registry_(registry) {
     }
 
-    void AuthRegisterPanel::render() {
-        auto& state = registry_.get_state<AuthRegisterState>("AuthRegister");
+    void AuthLoginPanel::render() {
+        auto& state = registry_.get_state<AuthLoginState>("AuthLogin");
 
         ImGuiWindowFlags flags =
             ImGuiWindowFlags_NoTitleBar |
@@ -29,7 +29,7 @@ namespace minidfs::panel {
         ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 10.0f));
         ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(12.0f, 8.0f));
 
-        if (ImGui::Begin("AuthRegister", nullptr, flags)) {
+        if (ImGui::Begin("AuthLogin", nullptr, flags)) {
 
             float window_width = ImGui::GetWindowWidth();
             float content_width = window_width - 64.0f; // Account for padding
@@ -37,9 +37,8 @@ namespace minidfs::panel {
 
             show_header();
             show_form_fields(state);
-            show_terms_checkbox(state);
-            show_register_button(state);
-            show_login_button();
+            show_login_button(state);
+            show_signup_link();
         }
 
         ImGui::End();
@@ -47,7 +46,7 @@ namespace minidfs::panel {
         ImGui::PopStyleColor();
     }
 
-    void AuthRegisterPanel::show_header() {
+    void AuthLoginPanel::show_header() {
         const char* text = "Welcome to Misty";
         
         // Scale font to 1.5x
@@ -70,16 +69,8 @@ namespace minidfs::panel {
         ImGui::Spacing();
     }
 
-    void AuthRegisterPanel::show_form_fields(AuthRegisterState& state) {
+    void AuthLoginPanel::show_form_fields(AuthLoginState& state) {
         float width = ImGui::GetContentRegionAvail().x;
-
-        // Username
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
-        auto& person_icon = core::AssetManager::get().get_svg_texture("person-16", 24);
-        IconText(person_icon, 16.0f, "Username", 1.0f, -2.0f);
-        ImGui::PopStyleColor();
-        ImGui::SetNextItemWidth(width);
-        ImGui::InputTextWithHint("##username", "", state.full_name, sizeof(state.full_name));
 
         // Email
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
@@ -89,6 +80,8 @@ namespace minidfs::panel {
         ImGui::SetNextItemWidth(width);
         ImGui::InputTextWithHint("##email", "", state.email, sizeof(state.email));
 
+        ImGui::Spacing();
+
         // Password
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
         auto& lock_icon = core::AssetManager::get().get_svg_texture("lock-16", 24);
@@ -96,51 +89,9 @@ namespace minidfs::panel {
         ImGui::PopStyleColor();
         ImGui::SetNextItemWidth(width);
         ImGui::InputTextWithHint("##password", "", state.password, sizeof(state.password), ImGuiInputTextFlags_Password);
-
-        // Confirm password
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
-        auto& lock_icon2 = core::AssetManager::get().get_svg_texture("lock-16", 24);
-        IconText(lock_icon2, 16.0f, "Confirm password", 1.0f, -2.0f);
-        ImGui::PopStyleColor();
-        ImGui::SetNextItemWidth(width);
-        ImGui::InputTextWithHint("##confirm_password", "", state.confirm_password, sizeof(state.confirm_password), ImGuiInputTextFlags_Password);
     }
 
-    void AuthRegisterPanel::show_terms_checkbox(AuthRegisterState& state) {
-
-        // Checkbox styling
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
-        ImGui::Checkbox("I agree to the ", &state.agree_to_terms);
-        ImGui::SameLine();
-        
-        // Underlined links - using Selectable to make them properly clickable
-        ImVec4 link_color = ImVec4(0.4f, 0.7f, 1.0f, 1.0f);
-        ImGui::PushStyleColor(ImGuiCol_Text, link_color);
-        ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(0, 0, 0, 0)); // Transparent background
-        ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(0, 0, 0, 0)); // Transparent hover
-        
-        if (ImGui::Selectable("Terms of Service", false, ImGuiSelectableFlags_None)) {
-            show_terms_in_browser();
-        }
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNone)) {
-            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-        }
-        
-        ImGui::SameLine();
-        ImGui::Text(" and ");
-        ImGui::SameLine();
-        
-        if (ImGui::Selectable("Privacy Policy", false, ImGuiSelectableFlags_None)) {
-            // Handle Privacy Policy click
-        }
-        if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNone)) {
-            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-        }
-        
-        ImGui::PopStyleColor(4); // Pop: checkbox text, link text, header bg, header hover
-    }
-
-    void AuthRegisterPanel::show_register_button(AuthRegisterState& state) {
+    void AuthLoginPanel::show_login_button(AuthLoginState& state) {
         float width = ImGui::GetContentRegionAvail().x;
         
         ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 6.0f);
@@ -149,39 +100,28 @@ namespace minidfs::panel {
         ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.15f, 0.4f, 0.8f, 1.0f));
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 1.0f, 1.0f, 1.0f));
 
-        if (ImGui::Button("Create account", ImVec2(width, 40))) {
-            state.handle_create_account();
+        if (ImGui::Button("Log in", ImVec2(width, 40))) {
+            state.handle_login();
         }
 
         ImGui::PopStyleColor(4);
         ImGui::PopStyleVar();
     }
 
-    void AuthRegisterPanel::show_login_button() {
+    void AuthLoginPanel::show_signup_link() {
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
-        ImGui::Text("Already have an account? ");
+        ImGui::Text("Don't have an account? ");
         ImGui::SameLine();
         
         ImVec4 link_color = ImVec4(0.4f, 0.7f, 1.0f, 1.0f);
         ImGui::PushStyleColor(ImGuiCol_Text, link_color);
-        ImGui::Text("Log in");
+        ImGui::Text("Sign up");
         if (ImGui::IsItemHovered()) {
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
             if (ImGui::IsItemClicked()) {
-                core::AppViewRegistryController::switch_view(view::ViewID::Login);
+                core::AppViewRegistryController::switch_view(view::ViewID::Auth);
             }
         }
         ImGui::PopStyleColor(2);
-    }
-
-    void AuthRegisterPanel::show_terms_in_browser() {
-        auto& state = registry_.get_state<AuthRegisterState>("AuthRegister");
-        std::string html_path = state.terms_of_service_path;
-        if (html_path.empty()) {
-            std::cerr << "Warning: Could not find terms_of_service.html" << std::endl;
-            return;
-        }
-
-        core::open_file_in_browser(html_path);
     }
 }
