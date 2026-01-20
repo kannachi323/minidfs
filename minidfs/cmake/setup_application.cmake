@@ -76,6 +76,7 @@ target_include_directories(minidfs_client PRIVATE
     ${CMAKE_SOURCE_DIR}/vendor/imgui/backends
     ${CMAKE_SOURCE_DIR}/vendor/imgui
     ${CMAKE_SOURCE_DIR}/vendor/stb
+    ${CMAKE_SOURCE_DIR}/vendor/json/single_include
 )
 
 # project includes

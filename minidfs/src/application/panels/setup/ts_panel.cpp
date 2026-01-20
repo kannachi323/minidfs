@@ -11,6 +11,8 @@ namespace minidfs::panel {
     void TSPanel::render() {
         auto& state = registry_.get_state<TSPanelState>("TSPanel");
 
+        state.poll_status_if_needed();
+
         ImGuiWindowFlags flags =
             ImGuiWindowFlags_NoTitleBar |
             ImGuiWindowFlags_NoResize |
@@ -85,6 +87,16 @@ namespace minidfs::panel {
         if (state.is_fetching_url) {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
             ImGui::Text("Fetching login URL...");
+            ImGui::PopStyleColor();
+            ImGui::Spacing();
+        }
+
+        if (state.has_fetched_url && !state.is_connected) {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.8f, 0.8f, 0.8f, 1.0f));
+            ImGui::TextWrapped("Finish signing in to Tailscale in your browser, then return here.");
+            if (state.is_polling_status) {
+                ImGui::Text("Checking connection status...");
+            }
             ImGui::PopStyleColor();
             ImGui::Spacing();
         }

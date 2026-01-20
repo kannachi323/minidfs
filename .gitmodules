@@ -23,3 +23,6 @@
 [submodule "vendor/glfw"]
 	path = vendor/glfw
 	url = git@github.com:glfw/glfw.git
+[submodule "minidfs/vendor/json"]
+	path = minidfs/vendor/json
+	url = git@github.com:nlohmann/json.git

@@ -18,6 +18,8 @@ namespace minidfs::core {
             return false;
         }
 
+        std::cout << "Opening file in browser: " << path << std::endl;
+
 #ifdef _WIN32
         HINSTANCE result = ShellExecuteA(NULL, "open", path.c_str(), NULL, NULL, SW_SHOWNORMAL);
         return reinterpret_cast<intptr_t>(result) > 32;
@@ -35,4 +37,5 @@ namespace minidfs::core {
         return false;
 #endif
     }
+
 }
