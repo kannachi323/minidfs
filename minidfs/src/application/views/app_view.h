@@ -13,7 +13,7 @@ namespace minidfs::view {
         Workspace,
         Activity,
         Devices,
-        None
+        Default
     };
 
     class AppView {
@@ -29,21 +29,25 @@ namespace minidfs::view {
     };
 
     class ViewRegistry {
+        
     public:
+        void init_default_view();
         void register_view(ViewID id, std::unique_ptr<AppView> view);
         void switch_view(ViewID id);
-        void render_current();
-        ViewID get_current_id() const;
+        void render_current_view();
+        ViewID get_current_view_id() const;
 
         static ViewRegistry& get();
 
     private:
         std::unordered_map<ViewID, std::unique_ptr<AppView>> views_;
         AppView* current_view_ = nullptr;
-        ViewID current_view_id_ = ViewID::None;
+        ViewID current_view_id_ = ViewID::Default;
+        
         mutable std::mutex mutex_;
     };
 
+    // Public API functions
     void register_view(ViewID id, std::unique_ptr<AppView> view);
     void switch_view(ViewID id);
     void render_current_view();

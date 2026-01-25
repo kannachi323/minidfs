@@ -23,7 +23,7 @@ func GetConfigSecretPath() string {
 		log.Println("Could not determine user home directory:", err)
 		return ""
 	}
-	secretPath := filepath.Join(home, ".minidfs", "tailscale", "secret.txt")
+	secretPath := filepath.Join(home, "misty", "minidfs", "tailscale", "secret.txt")
 
 	return secretPath
 }
@@ -34,7 +34,7 @@ func GetConfigPath() string {
 		log.Println("Could not determine user home directory:", err)
 		return ""
 	}
-	configPath := filepath.Join(home, ".minidfs", "tailscale", "config.json")
+	configPath := filepath.Join(home, "misty", "minidfs", "tailscale", "config.json")
 
 	return configPath
 }	

@@ -124,7 +124,7 @@ namespace minidfs::panel {
     inline bool TextInput(
         const char* label,
         char* buf,
-        size_t buf_size, 
+        size_t buf_size,
         ImGuiInputTextFlags flags = 0
     ) {
         ImGui::PushID(label);

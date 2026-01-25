@@ -40,7 +40,7 @@ namespace minidfs::panel {
             ImGui::SetCursorPosY(footer_y - nav_item_height);
             show_nav_item("gear-24", "Settings", 24, ViewID::Settings, state);
             ImGui::SetCursorPosY(footer_y);
-            show_nav_item("kebab-horizontal-24", "More", 24, ViewID::None, state);
+            show_nav_item("kebab-horizontal-24", "More", 24, ViewID::Default, state);
         }
         ImGui::End();
 

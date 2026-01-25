@@ -1,4 +1,5 @@
 ﻿#include "file_explorer_panel.h"
+#include "workspace_state.h"
 #include "imgui.h"
 
 
@@ -7,12 +8,31 @@ namespace fs = std::filesystem;
 using namespace minidfs::core;
 
 namespace minidfs::panel {
-    
-    FileExplorerPanel::FileExplorerPanel(UIRegistry& registry, WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client) 
+
+    FileExplorerPanel::FileExplorerPanel(UIRegistry& registry, WorkerPool& worker_pool, std::shared_ptr<MiniDFSClient> client)
         : registry_(registry), worker_pool_(worker_pool), client_(std::move(client)) {
 
         auto& state = registry_.get_state<FileExplorerState>("FileExplorer");
-        get_files(state, client_->GetClientMountPath());
+        auto& workspace_state = registry_.get_state<WorkspaceState>("Workspace");
+
+        // Fetch workspaces first
+        if (!workspace_state.has_fetched) {
+            workspace_state.fetch_workspaces();
+        }
+
+        // Use workspace mount path if available, otherwise fall back to client mount path
+        std::string start_path = workspace_state.get_current_mount_path();
+        if (start_path.empty()) {
+            start_path = client_->GetClientMountPath();
+        }
+
+        // Create directory if it doesn't exist
+        if (!start_path.empty()) {
+            std::error_code ec;
+            fs::create_directories(start_path, ec);
+        }
+
+        get_files(state, start_path);
     }
 
     void FileExplorerPanel::render() {

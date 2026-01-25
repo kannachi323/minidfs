@@ -4,6 +4,10 @@
 namespace minidfs::view {
 
     // ViewRegistry implementation
+    void ViewRegistry::init_default_view() {
+        // Default view initialization - no-op since AppView is abstract
+        // The default view will be set when a view is registered and switched to
+    }
     void ViewRegistry::register_view(ViewID id, std::unique_ptr<AppView> view) {
         std::lock_guard<std::mutex> lock(mutex_);
         views_[id] = std::move(view);
@@ -13,14 +17,15 @@ namespace minidfs::view {
         std::lock_guard<std::mutex> lock(mutex_);
         
         // Set new current view (must have been registered)
-        if (views_.find(id) != views_.end()) {
+        auto it = views_.find(id);
+        if (it != views_.end()) {
             current_view_id_ = id;
-            current_view_ = views_[id].get();
+            current_view_ = it->second.get();
         }
         // If view not registered, keep current view to avoid rendering nothing
     }
 
-    void ViewRegistry::render_current() {
+    void ViewRegistry::render_current_view() {
         // Get current view pointer before releasing lock to avoid issues
         // if switch_view is called from within render()
         AppView* view_to_render = nullptr;
@@ -35,7 +40,7 @@ namespace minidfs::view {
         }
     }
 
-    ViewID ViewRegistry::get_current_id() const {
+    ViewID ViewRegistry::get_current_view_id() const {
         std::lock_guard<std::mutex> lock(mutex_);
         return current_view_id_;
     }
@@ -55,10 +60,10 @@ namespace minidfs::view {
     }
 
     void render_current_view() {
-        ViewRegistry::get().render_current();
+        ViewRegistry::get().render_current_view();
     }
 
     ViewID get_current_view_id() {
-        return ViewRegistry::get().get_current_id();
+        return ViewRegistry::get().get_current_view_id();
     }
 }

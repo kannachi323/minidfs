@@ -4,7 +4,7 @@
 #include <cstring>
 #include <map>
 #include "core/ui_registry.h"
-#include "core/app_view_registry.h"
+#include "views/app_view.h"
 #include "core/http_client.h"
 #include "core/util.h"
 

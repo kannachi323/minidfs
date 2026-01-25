@@ -17,6 +17,7 @@ type Device struct {
 	PeerAddress  string    `json:"peer_address"`
 	DeviceName   string    `json:"device_name,omitempty"`
 	MountPath    string    `json:"mount_path,omitempty"`
+	WorkspaceID  string    `json:"workspace_id,omitempty"`
 	LastSeen     time.Time `json:"last_seen"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
@@ -55,9 +56,10 @@ func UpdateDevice(db *sql.DB, peer *tsbase.TSPeer, deviceName, mountPath string)
 // GetDevice retrieves a device by hostname
 func GetDevice(db *sql.DB, hostname string) (*Device, error) {
 	device := &Device{}
-	
+
+	var workspaceID sql.NullString
 	err := db.QueryRow(`
-		SELECT id, peer_hostname, peer_type, peer_address, device_name, mount_path, last_seen, created_at, updated_at
+		SELECT id, peer_hostname, peer_type, peer_address, device_name, mount_path, workspace_id, last_seen, created_at, updated_at
 		FROM devices WHERE peer_hostname = ?
 	`, hostname).Scan(
 		&device.ID,
@@ -66,11 +68,12 @@ func GetDevice(db *sql.DB, hostname string) (*Device, error) {
 		&device.PeerAddress,
 		&device.DeviceName,
 		&device.MountPath,
+		&workspaceID,
 		&device.LastSeen,
 		&device.CreatedAt,
 		&device.UpdatedAt,
 	)
-	
+
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -78,16 +81,19 @@ func GetDevice(db *sql.DB, hostname string) (*Device, error) {
 		log.Printf("Failed to get device %s: %v", hostname, err)
 		return nil, err
 	}
-	
+
+	device.WorkspaceID = workspaceID.String
+
 	return device, nil
 }
 
 // GetDeviceByID retrieves a device by ID
 func GetDeviceByID(db *sql.DB, id string) (*Device, error) {
 	device := &Device{}
-	
+
+	var workspaceID sql.NullString
 	err := db.QueryRow(`
-		SELECT id, peer_hostname, peer_type, peer_address, device_name, mount_path, last_seen, created_at, updated_at
+		SELECT id, peer_hostname, peer_type, peer_address, device_name, mount_path, workspace_id, last_seen, created_at, updated_at
 		FROM devices WHERE id = ?
 	`, id).Scan(
 		&device.ID,
@@ -96,11 +102,12 @@ func GetDeviceByID(db *sql.DB, id string) (*Device, error) {
 		&device.PeerAddress,
 		&device.DeviceName,
 		&device.MountPath,
+		&workspaceID,
 		&device.LastSeen,
 		&device.CreatedAt,
 		&device.UpdatedAt,
 	)
-	
+
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -108,7 +115,9 @@ func GetDeviceByID(db *sql.DB, id string) (*Device, error) {
 		log.Printf("Failed to get device %s: %v", id, err)
 		return nil, err
 	}
-	
+
+	device.WorkspaceID = workspaceID.String
+
 	return device, nil
 }
 
@@ -143,7 +152,7 @@ func UpdateDeviceInfo(db *sql.DB, id string, deviceName, mountPath string) error
 // GetAllDevices retrieves all devices from the database
 func GetAllDevices(db *sql.DB) ([]*Device, error) {
 	rows, err := db.Query(`
-		SELECT id, peer_hostname, peer_type, peer_address, device_name, mount_path, last_seen, created_at, updated_at
+		SELECT id, peer_hostname, peer_type, peer_address, device_name, mount_path, workspace_id, last_seen, created_at, updated_at
 		FROM devices ORDER BY peer_hostname
 	`)
 	if err != nil {
@@ -151,10 +160,11 @@ func GetAllDevices(db *sql.DB) ([]*Device, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	
+
 	var devices []*Device
 	for rows.Next() {
 		device := &Device{}
+		var workspaceID sql.NullString
 		err := rows.Scan(
 			&device.ID,
 			&device.PeerHostName,
@@ -162,6 +172,7 @@ func GetAllDevices(db *sql.DB) ([]*Device, error) {
 			&device.PeerAddress,
 			&device.DeviceName,
 			&device.MountPath,
+			&workspaceID,
 			&device.LastSeen,
 			&device.CreatedAt,
 			&device.UpdatedAt,
@@ -170,14 +181,59 @@ func GetAllDevices(db *sql.DB) ([]*Device, error) {
 			log.Printf("Failed to scan device: %v", err)
 			continue
 		}
+		device.WorkspaceID = workspaceID.String
 		devices = append(devices, device)
 	}
-	
+
 	if err = rows.Err(); err != nil {
 		log.Printf("Error iterating devices: %v", err)
 		return nil, err
 	}
-	
+
+	return devices, nil
+}
+
+// GetDevicesByWorkspace retrieves all devices belonging to a workspace
+func GetDevicesByWorkspace(db *sql.DB, workspaceID string) ([]*Device, error) {
+	rows, err := db.Query(`
+		SELECT id, peer_hostname, peer_type, peer_address, device_name, mount_path, workspace_id, last_seen, created_at, updated_at
+		FROM devices WHERE workspace_id = ? ORDER BY peer_hostname
+	`, workspaceID)
+	if err != nil {
+		log.Printf("Failed to query devices by workspace: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var devices []*Device
+	for rows.Next() {
+		device := &Device{}
+		var wsID sql.NullString
+		err := rows.Scan(
+			&device.ID,
+			&device.PeerHostName,
+			&device.PeerType,
+			&device.PeerAddress,
+			&device.DeviceName,
+			&device.MountPath,
+			&wsID,
+			&device.LastSeen,
+			&device.CreatedAt,
+			&device.UpdatedAt,
+		)
+		if err != nil {
+			log.Printf("Failed to scan device: %v", err)
+			continue
+		}
+		device.WorkspaceID = wsID.String
+		devices = append(devices, device)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Printf("Error iterating devices: %v", err)
+		return nil, err
+	}
+
 	return devices, nil
 }
 

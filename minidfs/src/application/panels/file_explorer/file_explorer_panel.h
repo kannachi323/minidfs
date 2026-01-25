@@ -6,6 +6,7 @@
 #include "panels/panel.h"
 #include "core/worker_pool.h"
 #include "file_explorer_state.h"
+#include "workspace_state.h"
 
 
 namespace minidfs::panel {

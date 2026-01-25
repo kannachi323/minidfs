@@ -11,7 +11,17 @@ import (
 
 func GetDevices(database *db.Database) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		deviceList, err := devices.GetAllDevices(database.Conn)
+		workspaceID := r.URL.Query().Get("workspace_id")
+
+		var deviceList []*devices.Device
+		var err error
+
+		if workspaceID != "" {
+			deviceList, err = devices.GetDevicesByWorkspace(database.Conn, workspaceID)
+		} else {
+			deviceList, err = devices.GetAllDevices(database.Conn)
+		}
+
 		if err != nil {
 			http.Error(w, "Failed to get devices", http.StatusInternalServerError)
 			return

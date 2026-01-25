@@ -21,7 +21,7 @@ func (db *Database) GetDatabasePath() string {
 		log.Println("Could not determine user home directory:", err)
 		return ""
 	}
-	databasePath := filepath.Join(home, ".minidfs", "db", "data.db")
+	databasePath := filepath.Join(home, "misty", "minidfs", "db", "data.db")
 
 	return databasePath
 }

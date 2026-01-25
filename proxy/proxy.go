@@ -7,6 +7,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/kannachi323/misty/proxy/api"
+	"github.com/kannachi323/misty/proxy/api/ms"
 	"github.com/kannachi323/misty/proxy/core/tsbase"
 	"github.com/kannachi323/misty/proxy/db"
 )
@@ -20,7 +21,7 @@ type Proxy struct {
 
 func CreateProxy() (*Proxy, error) {
 	home, _ := os.UserHomeDir()
-	dataDir := filepath.Join(home, ".minidfs", "tailscale")
+	dataDir := filepath.Join(home, "misty", "minidfs", "tailscale")
 	os.MkdirAll(dataDir, 0700)
 
 	proxy := &Proxy{
@@ -68,4 +69,15 @@ func (proxy *Proxy) MountHandlers() {
 	proxy.APIRouter.Post("/devices", api.RegisterDevice(proxy.TSBase, proxy.Database))
 	proxy.APIRouter.Put("/devices", api.UpdateDevice(proxy.Database))
 	proxy.APIRouter.Delete("/devices", api.DeleteDevice(proxy.Database))
+
+	proxy.APIRouter.Get("/workspaces", api.GetWorkspaces(proxy.Database))
+	proxy.APIRouter.Get("/workspace", api.GetWorkspace(proxy.Database))
+	proxy.APIRouter.Post("/workspaces", api.CreateWorkspace(proxy.Database))
+	proxy.APIRouter.Put("/workspaces", api.UpdateWorkspace(proxy.Database))
+	proxy.APIRouter.Delete("/workspaces", api.DeleteWorkspace(proxy.Database))
+
+	// Microsoft OAuth endpoints
+	proxy.APIRouter.Get("/ms/auth", ms.GetOAuthLogin())
+	proxy.APIRouter.Get("/ms/callback", ms.OAuthCallback())
+	proxy.APIRouter.Post("/ms/upload/session", ms.CreateUploadSession())
 }

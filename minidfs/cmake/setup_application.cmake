@@ -13,6 +13,7 @@ set(IMGUI_SRCS
 
 file(GLOB_RECURSE APP_SRCS
     "src/application/*.cpp"
+    "src/application/*.mm"
     "src/application/*.h"
     "vendor/glad/src/glad.cpp"
     ${IMGUI_SRCS}
@@ -55,6 +56,7 @@ elseif(APPLE)
     target_link_libraries(minidfs_client PRIVATE
         "-framework CoreGraphics"
         "-framework CoreServices"
+        "-framework Cocoa"
     )
 elseif(UNIX AND NOT APPLE)
     file(GLOB LINUX_SRCS
