@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 	"path/filepath"
 
@@ -30,6 +31,11 @@ func CreateProxy() (*Proxy, error) {
 	proxy.Router.Route("/api", func(r chi.Router) {
 		proxy.APIRouter = r.(*chi.Mux)
 	})
+	
+	// Serve static files
+	workDir, _ := os.Getwd()
+	staticDir := filepath.Join(workDir, "static")
+	proxy.Router.Handle("/static/*", http.StripPrefix("/static/", http.FileServer(http.Dir(staticDir))))
 	base, err := tsbase.CreateTSBase(dataDir)
 	if err != nil {
 		return nil, err
@@ -78,6 +84,11 @@ func (proxy *Proxy) MountHandlers() {
 
 	// Microsoft OAuth endpoints
 	proxy.APIRouter.Get("/ms/auth", ms.GetOAuthLogin())
-	proxy.APIRouter.Get("/ms/callback", ms.OAuthCallback())
-	proxy.APIRouter.Post("/ms/upload/session", ms.CreateUploadSession())
+	proxy.APIRouter.Get("/ms/callback", ms.OAuthCallback(proxy.Database))
+	proxy.APIRouter.Get("/ms/callback/token", ms.UpdateMSToken(proxy.Database))
+	proxy.APIRouter.Get("/ms/token", ms.GetMSTokens(proxy.Database))
+	proxy.APIRouter.Post("/ms/token/refresh", ms.RefreshMSToken(proxy.Database))
+	proxy.APIRouter.Delete("/ms/token", ms.DeleteMSToken(proxy.Database))
+
+	
 }

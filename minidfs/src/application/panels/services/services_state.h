@@ -1,82 +1,71 @@
 #pragma once
 
 #include <string>
-#include <vector>
 #include <mutex>
-#include <chrono>
-#include <thread>
-#include <atomic>
-#include <cstring>
+#include <set>
 #include "core/ui_registry.h"
-#include <nlohmann/json.hpp>
-
 
 namespace minidfs::panel {
 
-    struct DeviceInfo {
-        std::string name;
+    // Microsoft account profile information from Graph API
+    struct MSUserProfile {
+        std::string display_name;
+        std::string email;
+        std::string user_principal_name;
         std::string id;
-        std::string hostname;
-        std::string ip_address;
-        bool is_online = false;
-        std::string last_seen;
-        std::string status_detail;
-        uint64_t used_bytes = 0;
-        uint64_t total_bytes = 0;
-        std::string mount_path;
-        std::string workspace_id;
+        bool loaded = false;
     };
 
-    struct ServicesState : public core::UIState {
-        std::mutex mu;
+    // Represents a single OneDrive connection
+    struct MSConnection {
+        std::string access_token;
+        MSUserProfile profile;
+        bool fetching_profile = false;
+        bool is_authenticated = false;
 
-        std::vector<DeviceInfo> devices;
+        bool has_token() const { return !access_token.empty(); }
 
-        std::string error_msg = "";
-        std::string success_msg = "";
+        // Comparison operator for std::set - use profile.id (ms_user_id) as primary key
+        // This allows us to keep expired connections in the set with their profile info
+        bool operator<(const MSConnection& other) const {
+            return profile.id < other.profile.id;
+        }
+    };
 
-        char search_buffer[256] = "";
-        bool filter_online_only = false;
+    // Snapshot of a single OneDrive connection for UI (panel uses this for rendering)
+    struct OneDriveCardState {
+        bool profile_loaded = false;
+        bool fetching = false;
+        bool should_fetch = false;
+        bool is_connected = false;
+        std::string current_token;
+        MSUserProfile profile;
+    };
 
-        std::string current_workspace_id = "";
-
-        bool show_add_device_modal = false;
-
-        bool show_edit_device_modal = false;
-        std::string editing_device_id = "";
-        char editing_device_name[256] = "";
-        char editing_mount_path[512] = "";
-
-        bool show_delete_confirm = false;
-        std::string deleting_device_id = "";
-        std::string deleting_device_name = "";
-
-        bool is_fetching_devices = false;
-        std::chrono::steady_clock::time_point last_fetch_time = std::chrono::steady_clock::time_point{};
-        static constexpr int fetch_interval_ms = 5000;
-
-        std::atomic<bool> ping_thread_running{false};
-        std::thread ping_thread;
-        std::chrono::steady_clock::time_point last_ping_time = std::chrono::steady_clock::time_point{};
-        static constexpr int ping_interval_ms = 300000;
-
-        std::string ms_access_token;
-        bool show_ms_login_modal = false;
-        bool is_ms_authenticated = false;
-        char ms_token_buffer[4096] = "";
-        std::string ms_auth_error;
-
+    class ServicesState : public core::UIState {
+    public:
+        ServicesState();
         ~ServicesState();
 
-        bool has_ms_token() const;
+        bool has_ms_tokens(); // Check if any connection has a token
+        void check_connections(); // Check once on startup for existing connections
+        bool get_onedrive_card_state(const std::string& ms_user_id, OneDriveCardState& out);
+        void fetch_token(); // Fetch token from proxy and add as new connection
+        void fetch_ms_user_profile(const std::string& token); // Fetch user profile for a specific connection
+        void mark_disconnected(const std::string& ms_user_id); // Mark a specific connection as disconnected
+        void initiate_ms_login();
+        void disconnect_onedrive(const std::string& ms_user_id); // Disconnect a specific OneDrive connection
+        std::string refresh_ms_token(const std::string& ms_user_id); // Attempt to refresh token, returns new access_token or empty on failure
 
+        // Helper functions to find connections
+        std::set<MSConnection>::iterator find_by_token(const std::string& token);
+        std::set<MSConnection>::iterator find_by_ms_user_id(const std::string& ms_user_id);
 
-        void start_ping_thread();
-        void stop_ping_thread();
-
-        // Device management
-        bool ping_device(const std::string& hostname);
-        void ping_all_devices();
-        void fetch_devices();
+        std::mutex mu;
+        std::string error_msg = "";
+        std::string success_msg = "";
+        std::set<MSConnection> ms_connections; // Multiple OneDrive connections
+        bool show_ms_login_modal = false;
+        std::string ms_auth_error;
     };
 }

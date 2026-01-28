@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/kannachi323/misty/proxy/core/devices"
 	"github.com/kannachi323/misty/proxy/core/tsbase"
 	"github.com/kannachi323/misty/proxy/db"
 )
@@ -13,17 +12,17 @@ func GetDevices(database *db.Database) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		workspaceID := r.URL.Query().Get("workspace_id")
 
-		var deviceList []*devices.Device
+		var deviceList []*db.Device
 		var err error
 
 		if workspaceID != "" {
-			deviceList, err = devices.GetDevicesByWorkspace(database.Conn, workspaceID)
+			deviceList, err = db.GetDevicesByWorkspace(database.Conn, workspaceID)
 		} else {
-			deviceList, err = devices.GetAllDevices(database.Conn)
+			deviceList, err = db.GetAllDevices(database.Conn)
 		}
 
 		if err != nil {
-			http.Error(w, "Failed to get devices", http.StatusInternalServerError)
+			http.Error(w, "Failed to get db", http.StatusInternalServerError)
 			return
 		}
 
@@ -56,7 +55,7 @@ func RegisterDevice(ts *tsbase.TSBase, database *db.Database) http.HandlerFunc {
 		}
 
 		// Update/register the device in the database with additional info
-		err := devices.UpdateDevice(database.Conn, serverPeer, deviceInfo.DeviceName, deviceInfo.MountPath)
+		err := db.UpdateDevice(database.Conn, serverPeer, deviceInfo.DeviceName, deviceInfo.MountPath)
 		if err != nil {
 			http.Error(w, "Failed to register device", http.StatusInternalServerError)
 			return
@@ -65,7 +64,7 @@ func RegisterDevice(ts *tsbase.TSBase, database *db.Database) http.HandlerFunc {
 		// Also sync all peers to the database
 		allPeers, err := ts.GetPeers()
 		if err == nil {
-			devices.SyncDevicesFromPeers(database.Conn, allPeers)
+			db.SyncDevicesFromPeers(database.Conn, allPeers)
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -106,7 +105,7 @@ func UpdateDevice(database *db.Database) http.HandlerFunc {
 			}
 		}
 
-		err := devices.UpdateDeviceInfo(database.Conn, id, deviceInfo.DeviceName, deviceInfo.MountPath)
+		err := db.UpdateDeviceInfo(database.Conn, id, deviceInfo.DeviceName, deviceInfo.MountPath)
 		if err != nil {
 			http.Error(w, "Failed to update device", http.StatusInternalServerError)
 			return
@@ -128,7 +127,7 @@ func DeleteDevice(database *db.Database) http.HandlerFunc {
 			return
 		}
 
-		err := devices.DeleteDevice(database.Conn, id)
+		err := db.DeleteDevice(database.Conn, id)
 		if err != nil {
 			http.Error(w, "Failed to delete device", http.StatusInternalServerError)
 			return

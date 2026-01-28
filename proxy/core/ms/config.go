@@ -34,6 +34,7 @@ func GetConfig() *MSConfig {
 			Authority:    "https://login.microsoftonline.com/common",
 			Scopes: []string{
 				"https://graph.microsoft.com/User.Read",
+				"https://graph.microsoft.com/Files.ReadWrite.All",
 				"offline_access",
 			},
 		}

@@ -13,8 +13,8 @@ func (db *Database) InsertUser(name, email, password string) error {
     hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
     _, err := db.Conn.Exec(`
-        INSERT INTO users (id, name, email, password, is_admin) 
-        VALUES (?, ?, ?, ?, ?)`, 
+        INSERT INTO users (id, name, email, password) 
+        VALUES (?, ?, ?, ?)`, 
         id, name, email, hashedPassword, 0,
     )
     if err != nil {

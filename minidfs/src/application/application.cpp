@@ -85,12 +85,5 @@ namespace minidfs {
         view::register_view(view::ViewID::Login, std::make_unique<view::LoginView>(ui_registry_));
         view::register_view(view::ViewID::Services, std::make_unique<view::ServicesView>(ui_registry_));
         view::switch_view(view::ViewID::FileExplorer);
-    
     }
-
-    
-
-   
-
-    
 };

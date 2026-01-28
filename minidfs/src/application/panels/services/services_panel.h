@@ -3,7 +3,6 @@
 #include "panels/panel.h"
 #include "core/ui_registry.h"
 #include "services_state.h"
-#include "panels/setup/ts_panel.h"
 
 using namespace minidfs::core;
 
@@ -18,16 +17,14 @@ namespace minidfs::panel {
         void show_header();
         void show_cloud_section(ServicesState& state);
         void show_ms_login_modal(ServicesState& state);
-        void initiate_ms_login(ServicesState& state);
-        void show_filters(ServicesState& state);
-        void show_devices_list(ServicesState& state);
-        void show_device_item(DeviceInfo& device);
-        void show_add_device_modal(ServicesState& state);
-        void show_edit_device_modal(ServicesState& state);
-        void show_delete_confirm_modal(ServicesState& state);
+        void show_onedrive_profile_card(ServicesState& state, const std::string& ms_user_id);
+
+        // OneDrive card UI sub-views (state lives in ServicesState)
+        void show_onedrive_card_header(bool is_connected);
+        void show_onedrive_card_profile(const OneDriveCardState& card, const std::string& ms_user_id);
+        void show_onedrive_card_actions(ServicesState& state, const std::string& ms_user_id, bool is_connected);
 
     private:
         UIRegistry& registry_;
-        std::shared_ptr<TSPanel> ts_panel_;
     };
 }

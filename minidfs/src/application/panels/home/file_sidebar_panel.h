@@ -27,11 +27,7 @@ namespace minidfs::panel {
         void show_upload_progress_modal(FileSidebarState& state);
         void show_quick_access(float width, float padding);
         void show_storage_info(float width, float padding);
-
-        void start_file_upload(FileSidebarState& state, const std::vector<std::string>& file_paths);
-        void create_upload_session_and_upload(FileSidebarState& state, const std::string& file_path, const std::string& dest_path, const std::string& ms_token);
-
-
+        
     private:
         core::UIRegistry& registry_;
         core::WorkerPool& worker_pool_;

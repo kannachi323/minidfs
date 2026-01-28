@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS devices (
-    id TEXT PRIMARY KEY,
+    workspace_id TEXT PRIMARY KEY REFERENCES workspaces(id),
     peer_hostname VARCHAR(255) UNIQUE NOT NULL,
     peer_type VARCHAR(50) NOT NULL,
     peer_address VARCHAR(50) NOT NULL,
